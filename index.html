@@ -57,7 +57,7 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100dvh;overflow:hidden;background:var(--brand-bg);color:var(--brand-text);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+html,body{width:100%;height:100dvh;overflow:hidden;overflow:clip;background:var(--brand-bg);color:var(--brand-text);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ---------- capas globales ---------- */
@@ -70,7 +70,7 @@ body.is-light #lightbg{opacity:1}
 @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 
 /* ---------- escenario 16:9 escalado ---------- */
-#viewport{position:fixed;inset:0;z-index:3;overflow:hidden}
+#viewport{position:fixed;inset:0;z-index:3;overflow:hidden;overflow:clip}
 #stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
 
 section.slide{position:absolute;inset:0;padding:var(--m);visibility:hidden;opacity:0;pointer-events:none;
@@ -152,16 +152,31 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #s2 .fact .big{font-family:var(--font-display);font-weight:800;font-size:54px;color:var(--brand-accent);line-height:1}
 #s2 .fact .big.c{color:var(--brand-accent-2)}
 #s2 .fact p{font-size:19px;line-height:1.45;font-weight:300;margin:12px 0 18px;max-width:34ch}
-#mapsvg{width:100%;height:100%;overflow:visible}
-#mapsvg .lbl{font-family:var(--font-body);font-size:18px;fill:var(--orbyt-platino)}
-#mapsvg .lbl-s{font-family:var(--font-body);font-size:13px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
-#mapsvg .route{fill:none;stroke:var(--orbyt-cian-fuerte);stroke-width:1.5;stroke-dasharray:4 10}
-.slide.active #mapsvg .route{animation:dash 2.4s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-56}}
-#mapsvg .ring{fill:none;stroke:var(--orbyt-verde-claro);transform-box:fill-box;transform-origin:center}
-.slide.active #mapsvg .ring{animation:pulse 2.8s var(--ease-orbit) infinite}
-#mapsvg .ring.r2{animation-delay:1.4s!important}
+.mapcol{position:relative;height:100%}
+.mctl{display:flex;gap:32px;align-items:flex-start}
+.mtoggle{position:relative;flex:none;display:inline-flex;padding:4px;border:1px solid var(--brand-border);border-radius:999px;z-index:2}
+.mtoggle button{position:relative;z-index:1;padding:10px 22px;border-radius:999px;font-size:15px;letter-spacing:.04em;color:var(--brand-text-muted);transition:color var(--dur-base) var(--ease-orbit)}
+.mtoggle button.on{color:var(--orbyt-azul-profundo);font-weight:500}
+.mtoggle .knob{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--brand-accent);transition:transform var(--dur-base) var(--ease-orbit),width var(--dur-base) var(--ease-orbit)}
+.mtoggle button:not(.on):hover{color:var(--orbyt-platino)}
+.mcap{max-width:560px;min-height:96px;font-family:var(--font-display);font-size:26px;line-height:1.2;transition:opacity 300ms var(--ease-orbit)}
+.mcap small{display:block;font-family:var(--font-body);font-size:15px;color:var(--brand-text-muted);margin-top:10px;line-height:1.45}
+#mapsvg{position:absolute;right:20px;top:0;width:700px;height:880px;overflow:visible}
+#mapsvg .land{fill:var(--brand-surface-subtle);stroke:rgb(227 227 227 / .28);stroke-width:1.2;stroke-linejoin:round}
+#mapsvg .grid line{stroke:rgb(227 227 227 / .06);stroke-width:1}
+#mapsvg .arc{fill:none;stroke-width:1.6;stroke-dasharray:3 7;transition:stroke var(--dur-base) var(--ease-orbit),opacity var(--dur-base)}
+#mapsvg .arc.out{stroke:var(--orbyt-cian-fuerte)}
+#mapsvg .arc.in{stroke:var(--orbyt-verde-claro)}
+#mapsvg .city text{font-family:var(--font-body);font-size:16px;fill:var(--orbyt-platino)}
+#mapsvg .city text.s{font-size:11px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
+#mapsvg .city .dot{transition:r var(--dur-base) var(--ease-enter),fill var(--dur-base)}
+#mapsvg .cba-name{font-family:var(--font-display)!important;font-weight:800;font-size:24px!important}
+#mapsvg .pulse{fill:none;stroke-width:1.4;transform-box:fill-box;transform-origin:center}
+.slide.active #mapsvg .pulse{animation:pulse 2.8s var(--ease-orbit) infinite}
+#mapsvg .pulse.p2{animation-delay:1.4s!important}
 @keyframes pulse{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+#mapsvg .orb{fill:none;stroke:var(--orbyt-verde-claro);stroke-width:1;opacity:0;transition:opacity var(--dur-slide) var(--ease-orbit)}
+#mapsvg.orbyt .orb{opacity:.55}
 
 /* 03 Manifiesto */
 #s3{display:flex;flex-direction:column;justify-content:center}
@@ -248,21 +263,6 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #campus .fallback{position:absolute;inset:0;display:none;place-items:center;color:var(--brand-text-muted);font-size:16px}
 #s7 .note{position:absolute;right:var(--m);bottom:var(--m)}
 
-/* 08 Un día en órbita */
-#s8 .h1{font-size:64px;margin-top:34px}
-#s8 .lead{margin-top:18px;max-width:48ch;font-size:24px}
-#daysvg{position:absolute;left:0;top:300px;width:1920px;height:700px;overflow:visible}
-#daysvg .arc{fill:none;stroke:rgb(227 227 227 / .22);stroke-width:1.5}
-#daysvg .arc-on{fill:none;stroke:var(--orbyt-verde-claro);stroke-width:3;stroke-linecap:round}
-#daysvg .pt circle{fill:var(--orbyt-azul-profundo);stroke:var(--orbyt-cian-fuerte);stroke-width:2}
-#daysvg .pt.k circle{fill:var(--orbyt-verde-claro);stroke:var(--orbyt-verde-claro)}
-#daysvg .pt text{font-family:var(--font-body);fill:var(--orbyt-platino);font-size:20px}
-#daysvg .pt text.s{font-size:13px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
-#daysvg .hr{font-family:var(--font-display);font-weight:800;font-size:64px;fill:var(--orbyt-verde-claro)}
-#daysvg .pt{opacity:0;transition:opacity 500ms var(--ease-enter)}
-#daysvg .pt.show{opacity:1}
-#s8 .note{position:absolute;left:var(--m);bottom:var(--m)}
-
 /* 09 Qué se lleva cada asistente */
 #s9 .h1{font-size:64px;margin-top:34px;max-width:18ch}
 #s9 .take{position:absolute;left:var(--m);right:var(--m);bottom:var(--m);display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1fr;gap:16px}
@@ -275,8 +275,6 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #s9 .tk.hero .n{color:var(--orbyt-azul-profundo)}
 #s9 .tk.hero .hrs{font-family:var(--font-display);font-weight:800;font-size:76px;line-height:.92;letter-spacing:-.03em}
 #s9 .tk.hero p{color:var(--orbyt-azul-profundo)}
-#pins{position:absolute;inset:0;pointer-events:none}
-#pins i{position:absolute;width:18px;height:18px;border-radius:50%;opacity:.95}
 
 /* 10 Sin presupuesto */
 #s10{padding:0}
@@ -287,7 +285,7 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #s10 .h1{font-size:60px;margin-top:34px}
 #s10 .zero{font-family:var(--font-display);font-weight:800;font-size:132px;color:var(--brand-accent);line-height:.9;letter-spacing:-.03em;margin-top:44px}
 #s10 .zero small{display:block;font-family:var(--font-body);font-weight:300;font-size:22px;color:var(--brand-text-muted);letter-spacing:0;margin-top:14px}
-#s10 .fund{position:absolute;left:var(--m);right:60px;bottom:var(--m);display:grid;gap:0;border-top:1px solid var(--brand-border)}
+#s10 .fund-old{position:absolute;left:var(--m);right:60px;bottom:var(--m);display:grid;gap:0;border-top:1px solid var(--brand-border)}
 #s10 .fund div{display:grid;grid-template-columns:64px 1fr;padding:20px 0;border-bottom:1px solid var(--brand-border);align-items:baseline}
 #s10 .fund .n{font-family:var(--font-display);font-weight:800;color:var(--brand-accent);font-size:16px}
 #s10 .fund b{font-family:var(--font-display);font-weight:400;font-size:24px;display:block}
@@ -298,8 +296,6 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #s10 .ask li small{display:block;font-family:var(--font-body);font-size:15px;color:rgb(0 26 37 / .7);margin-top:4px}
 #s10 .ask svg{width:26px;height:26px}
 #s10 .ask .ck{fill:none;stroke:var(--orbyt-azul-profundo);stroke-width:2.2;stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset 600ms var(--ease-enter)}
-.slide.active #s10-anchor{}
-#s10.active .ask li .ck{stroke-dashoffset:0;transition-delay:calc(700ms + var(--i)*110ms)}
 #s10 .ask .o{fill:none;stroke:var(--orbyt-bruma-oceanica);stroke-width:1.5}
 
 /* 11 Por qué nosotros (claro) */
@@ -323,10 +319,195 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #s12 .logo{position:absolute;left:var(--m);bottom:var(--m);width:300px} /* posición 4, mismo eje que el texto */
 #s12 .contact{position:absolute;right:var(--m);top:var(--m);text-align:right}
 
+/* 07 · planta isométrica offline (SVG) */
+#campus svg.iso{position:absolute;inset:0;width:100%;height:100%;overflow:visible;transition:opacity 700ms var(--ease-orbit)}
+#campus.three-on svg.iso{opacity:0;pointer-events:none}
+#campus:not(.three-on) .labels{display:none}
+.iso .isp{cursor:pointer}
+.iso .isp .f-top{fill:var(--orbyt-bruma-oceanica)}
+.iso .isp .f-s{fill:var(--orbyt-bruma-oceanica);opacity:.72}
+.iso .isp .f-e{fill:var(--orbyt-bruma-oceanica);opacity:.5}
+.iso .isp .f-plaza{fill:var(--orbyt-cian-fuerte);opacity:.42}
+.iso .isp .f-top,.iso .isp .f-s,.iso .isp .f-e,.iso .isp .f-plaza{transition:fill 500ms var(--ease-orbit),opacity 500ms var(--ease-orbit);stroke:rgb(227 227 227 / .28);stroke-width:.8;stroke-linejoin:round}
+.iso .isp.on .f-top,.iso .isp.on .f-s,.iso .isp.on .f-e{fill:var(--orbyt-verde-claro)}
+.iso .isp.on .f-plaza{fill:var(--orbyt-verde-claro);opacity:.6}
+.iso .isp:not(.on):hover .f-top{fill:var(--orbyt-cian-fuerte)}
+.iso .ctx-top{fill:#0A3A4B}.iso .ctx-s{fill:#0A3A4B;opacity:.75}.iso .ctx-e{fill:#0A3A4B;opacity:.55}
+.iso .ctx-top,.iso .ctx-s,.iso .ctx-e{stroke:rgb(227 227 227 / .14);stroke-width:.8}
+.iso .base{fill:#052B3B;stroke:rgb(227 227 227 / .18);stroke-width:1}
+.iso .path{fill:#0B3D50}
+.iso .lake{fill:var(--orbyt-bruma-oceanica)}
+.iso .tree{fill:var(--orbyt-cian-fuerte)}
+.iso .prop{fill:var(--orbyt-platino);stroke:rgb(0 26 37 / .4);stroke-width:.6}
+.iso .ipulse{fill:none;stroke:var(--orbyt-verde-claro);stroke-width:2;transform-box:fill-box;transform-origin:center;opacity:0}
+.slide.active .iso .ipulse{animation:ipulse 2.4s var(--ease-orbit) infinite}
+.iso .ipulse.p2{animation-delay:1.2s!important}
+@keyframes ipulse{0%{transform:scale(.7);opacity:.95}100%{transform:scale(1.35);opacity:0}}
+.iso .ilabel{cursor:pointer}
+.iso .ilabel rect{fill:var(--orbyt-azul-profundo);stroke:rgb(227 227 227 / .3);stroke-width:1;transition:fill var(--dur-micro)}
+.iso .ilabel text{font-family:var(--font-display);font-size:15px;fill:var(--orbyt-platino)}
+.iso .ilabel.on rect{fill:var(--orbyt-verde-claro);stroke:var(--orbyt-verde-claro)}
+.iso .ilabel.on text{fill:var(--orbyt-azul-profundo);font-weight:800}
+.iso .ilabel line{stroke:rgb(227 227 227 / .4)}
+.iso .ilabel.on line{stroke:var(--orbyt-verde-claro)}
+.iso .ppl{fill:var(--orbyt-platino)}
+
+/* 08 · cronograma orbital */
+#s8 .h1{font-size:64px;margin-top:34px}
+#s8 .lead{margin-top:18px;max-width:30ch;font-size:24px}
+#s8 .pillars8{position:absolute;left:var(--m);top:470px;width:500px}
+#s8 .pillars8 .cap{display:block;margin-bottom:14px}
+.pl{display:grid;grid-template-columns:20px 1fr auto;gap:14px;align-items:center;width:100%;text-align:left;padding:16px 0;border-top:1px solid var(--brand-border);transition:opacity var(--dur-base) var(--ease-orbit)}
+.pl:last-of-type{border-bottom:1px solid var(--brand-border)}
+.pl i{width:14px;height:14px;border-radius:50%;display:block}
+.pl b{font-family:var(--font-display);font-weight:800;font-size:22px}
+.pl em{font-style:normal;font-family:var(--font-display);font-size:30px;font-weight:800;min-width:1.4em;text-align:right;transition:color var(--dur-base)}
+.pl .bar{grid-column:2 / 4;height:3px;background:var(--brand-border);position:relative;overflow:hidden}
+.pl .bar span{position:absolute;left:0;top:0;bottom:0;width:0;transition:width 700ms var(--ease-enter)}
+.pl.zero{opacity:.38}
+.pl[data-p="0"] i,.pl[data-p="0"] .bar span{background:var(--orbyt-verde-claro)} .pl[data-p="0"] em{color:var(--orbyt-verde-claro)}
+.pl[data-p="1"] i,.pl[data-p="1"] .bar span{background:var(--orbyt-cian-fuerte)} .pl[data-p="1"] em{color:var(--orbyt-cian-fuerte)}
+.pl[data-p="2"] i,.pl[data-p="2"] .bar span{background:var(--orbyt-platino)} .pl[data-p="2"] em{color:var(--orbyt-platino)}
+#cronsvg{position:absolute;left:600px;top:250px;width:700px;height:760px;overflow:visible}
+#cronsvg .seg{fill:none;stroke-width:54;cursor:pointer;stroke:var(--orbyt-bruma-oceanica);transition:stroke 400ms var(--ease-orbit),opacity 400ms}
+#cronsvg .seg:hover{stroke:#0E7591}
+#cronsvg .seg.on{stroke:var(--orbyt-platino)}
+#cronsvg .seglbl{font-family:var(--font-display);font-size:20px;fill:var(--orbyt-platino);cursor:pointer;transition:fill var(--dur-micro)}
+#cronsvg .seglbl.on{font-weight:800}
+#cronsvg .track{fill:none;stroke:rgb(227 227 227 / .12);stroke-width:1;stroke-dasharray:2 6}
+#cronsvg .hr{font-family:var(--font-display);font-weight:800;font-size:22px;fill:var(--orbyt-verde-claro)}
+#cronsvg .ctr-n{font-family:var(--font-display);font-weight:800;font-size:46px;fill:var(--orbyt-platino)}
+#cronsvg .ctr-s{font-family:var(--font-body);font-size:14px;letter-spacing:.14em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
+#cronsvg .body circle{transition:opacity var(--dur-base)}
+#s8 .agenda{position:absolute;right:var(--m);top:300px;width:520px}
+#s8 .ftabs{display:flex;gap:8px;margin-bottom:26px}
+.ft{padding:9px 16px;border-radius:999px;border:1px solid var(--brand-border);font-size:14px;color:var(--brand-text-muted);transition:all var(--dur-micro) var(--ease-orbit)}
+.ft:hover{color:var(--orbyt-platino);border-color:var(--orbyt-platino)}
+.ft.on{background:var(--orbyt-platino);border-color:var(--orbyt-platino);color:var(--orbyt-azul-profundo);font-weight:500}
+#s8 .fname{font-family:var(--font-display);font-weight:800;font-size:40px;line-height:1}
+#s8 .fsub{font-size:15px;color:var(--brand-text-muted);margin:10px 0 18px}
+#flist{list-style:none;border-top:1px solid var(--brand-border)}
+#flist li{display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--brand-border);opacity:0;transform:translate(var(--enter-x),var(--enter-y));animation:fin 700ms var(--ease-enter) forwards;animation-delay:calc(var(--i)*55ms);transition:opacity var(--dur-base)}
+#flist li.dim{opacity:.28!important}
+@keyframes fin{to{opacity:1;transform:none}}
+#flist li i{width:10px;height:10px;border-radius:50%;display:block;transform:translateY(-1px)}
+#flist li b{font-family:var(--font-display);font-size:20px;font-weight:400}
+#flist li small{display:block;font-size:14px;color:var(--brand-text-muted);margin-top:3px}
+#flist li em{font-style:normal;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+#s8 .allday{margin-top:18px;font-size:14px;color:var(--brand-text-muted)}
+#s8 .allday b{color:var(--orbyt-platino);font-weight:500}
+#s8 .note{position:absolute;left:var(--m);bottom:var(--m)}
+
+/* 09 · gafete y pines */
+#s9 .tk .ia{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 10px;position:relative}
+.badge{position:relative;width:150px;height:200px;cursor:pointer;outline:none}
+.badge svg{width:100%;height:100%;overflow:visible}
+.badge .card{transition:transform 600ms var(--ease-enter)}
+.badge:hover .card,.badge.open .card{transform:translateY(6px)}
+.badge .field{fill:var(--orbyt-azul-profundo);stroke:rgb(227 227 227 / .35);transition:fill 400ms var(--ease-orbit),stroke 400ms}
+.badge.open .field{fill:var(--orbyt-verde-claro);stroke:var(--orbyt-verde-claro)}
+.badge .mask,.badge .ok{font-family:var(--font-display);font-size:10px;letter-spacing:.1em;transition:opacity 300ms var(--ease-orbit)}
+.badge .mask{fill:var(--orbyt-platino)}
+.badge .ok{fill:var(--orbyt-azul-profundo);font-weight:800;opacity:0}
+.badge.open .mask{opacity:0}.badge.open .ok{opacity:1}
+.badge .shackle{transition:transform 500ms var(--ease-enter);transform-box:fill-box;transform-origin:right bottom}
+.badge.open .shackle{transform:translateY(-3px) rotate(28deg)}
+.badge .res{opacity:0;transition:opacity 400ms var(--ease-orbit),transform 600ms var(--ease-enter)}
+.badge.open .res{opacity:1}
+.badge .res text{font-family:var(--font-body);font-size:10px;letter-spacing:.1em;text-transform:uppercase;fill:var(--orbyt-platino)}
+.badge .hint{font-family:var(--font-body);font-size:10px;letter-spacing:.14em;text-transform:uppercase;fill:rgb(227 227 227 / .55);transition:opacity 300ms}
+.badge.open .hint{opacity:0}
+.pinsbox{width:100%;height:200px;position:relative}
+.pinsbox svg{width:100%;height:100%;overflow:visible}
+.pinsbox .lnk{stroke:var(--orbyt-verde-claro);stroke-width:1.5;fill:none;stroke-dasharray:4 5;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-36}}
+.pinsbox .pin{cursor:pointer;outline:none}
+.badge:focus-visible,.pinsbox .pin:focus-visible circle.halo{outline:none;opacity:1}
+.pinsbox .pin circle.p{transition:transform 400ms var(--ease-enter);transform-box:fill-box;transform-origin:center}
+.pinsbox .pin:hover circle.p{transform:scale(1.18)}
+.pinsbox .pin.on circle.p{transform:scale(1.3)}
+.pinsbox .pin circle.halo{fill:none;stroke:var(--orbyt-verde-claro);stroke-width:1.4;opacity:0;transition:opacity 300ms}
+.pinsbox .pin.on circle.halo{opacity:1}
+.pinsbox .pin text{font-family:var(--font-body);font-size:11.5px;fill:rgb(227 227 227 / .75);text-anchor:middle}
+.pinsbox .pin.on text{fill:var(--orbyt-platino);font-weight:500}
+.pinsbox .cnt{font-family:var(--font-display);font-weight:800;font-size:13px;fill:var(--orbyt-verde-claro);text-anchor:middle;opacity:0;transition:opacity 300ms}
+
+/* 10 · flujo económico + checklist en vivo */
+#s10 .zero{font-size:112px;margin-top:30px}
+#flowsvg{position:absolute;left:var(--m);bottom:84px;width:780px;height:420px;overflow:visible}
+#flowsvg .src rect,#flowsvg .dst rect{fill:var(--brand-surface-subtle);stroke:var(--brand-border);stroke-width:1;transition:stroke var(--dur-micro),fill var(--dur-micro)}
+#flowsvg .src,#flowsvg .dst{cursor:default}
+#flowsvg .src text.t,#flowsvg .dst text.t{font-family:var(--font-display);font-size:19px;fill:var(--orbyt-platino)}
+#flowsvg .src text.s{font-family:var(--font-body);font-size:12.5px;fill:rgb(227 227 227 / .6)}
+#flowsvg .src text.n{font-family:var(--font-display);font-weight:800;font-size:13px;fill:var(--orbyt-verde-claro)}
+#flowsvg .lk{fill:none;stroke-width:1.6;stroke-dasharray:5 7;transition:opacity 300ms var(--ease-orbit),stroke-width 300ms}
+#flowsvg .lk.canje{stroke:var(--orbyt-cian-fuerte)}
+#flowsvg .lk.food{stroke:var(--orbyt-verde-claro)}
+#flowsvg .lk.propia{stroke:var(--orbyt-platino);opacity:.45;stroke-dasharray:2 6}
+.slide.active #flowsvg .lk{animation:flow 1.4s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+#flowsvg.focus .lk{opacity:.08}
+#flowsvg.focus .lk.hi{opacity:1;stroke-width:2.4}
+#flowsvg.focus .src,#flowsvg.focus .dst{opacity:.35;transition:opacity 300ms}
+#flowsvg.focus .hi{opacity:1}
+#flowsvg .hi rect{stroke:var(--orbyt-verde-claro)}
+#flowsvg .legend text{font-family:var(--font-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;fill:rgb(227 227 227 / .55)}
+#s10 .ask li{grid-template-columns:44px 1fr auto;cursor:pointer;padding:15px 12px;margin:0 -12px;transition:background var(--dur-micro)}
+#s10 .ask li:hover{background:var(--orbyt-white)}
+#s10 .ask .ck{stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset 500ms var(--ease-enter)}
+#s10 .ask .o{transition:fill 300ms var(--ease-orbit)}
+#s10 .ask li.done .ck{stroke-dashoffset:0;stroke:var(--orbyt-platino)}
+#s10 .ask li.done .o{fill:var(--orbyt-azul-profundo);stroke:var(--orbyt-azul-profundo)}
+#s10 .ask .tag{font-family:var(--font-body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid rgb(0 26 37 / .25);color:rgb(0 26 37 / .7);opacity:0;transition:opacity 300ms}
+#s10 .ask li.done .tag{opacity:1;background:var(--orbyt-azul-profundo);color:var(--orbyt-platino);border-color:var(--orbyt-azul-profundo)}
+#s10 .ask .nb{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgb(0 26 37 / .55);padding:4px 8px;border-radius:999px;opacity:0;transition:opacity var(--dur-micro)}
+#s10 .ask li:hover .nb,#s10 .ask li.has-note .nb{opacity:1}
+#s10 .ask .nb:hover{color:var(--orbyt-azul-profundo);background:var(--orbyt-platino)}
+#s10 .ask .note{grid-column:2 / 4;font-family:var(--font-body);font-size:15px;color:var(--orbyt-bruma-oceanica);outline:none;border-left:2px solid var(--orbyt-bruma-oceanica);padding:2px 0 2px 10px;margin-top:8px;display:none;cursor:text}
+#s10 .ask li.has-note .note,#s10 .ask li.editing .note{display:block}
+#s10 .ask .note:empty::before{content:"Escribí una nota…";color:rgb(0 26 37 / .4)}
+#s10 .ask li > span{display:flex;flex-direction:column}
+#s10 .r .tools{position:absolute;left:90px;bottom:var(--m);display:flex;gap:18px;align-items:center;font-size:13px;color:rgb(0 26 37 / .6)}
+#s10 .r .tools button{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgb(0 26 37 / .6);border-bottom:1px solid rgb(0 26 37 / .3)}
+#s10 .r .tools button:hover{color:var(--orbyt-azul-profundo)}
+
+/* 11 · credenciales con evidencia */
+#s11 .creds li{grid-template-columns:110px 1fr 40px;cursor:pointer;transition:background var(--dur-micro),padding var(--dur-base) var(--ease-enter);padding-left:0;padding-right:0}
+#s11 .creds li:hover{background:var(--orbyt-white);padding-left:14px;padding-right:14px}
+#s11 .creds li .plus{width:34px;height:34px;border-radius:50%;border:1px solid rgb(0 26 37 / .25);display:grid;place-items:center;align-self:center;transition:all var(--dur-micro)}
+#s11 .creds li:hover .plus{background:var(--orbyt-azul-profundo);border-color:var(--orbyt-azul-profundo);color:var(--orbyt-platino)}
+#s11 .hint11{margin-top:40px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:rgb(0 26 37 / .55)}
+#drawer{position:absolute;inset:0;z-index:30;visibility:hidden;pointer-events:none}
+#drawer.open{visibility:visible;pointer-events:auto}
+#drawer .bd{position:absolute;inset:0;background:rgb(0 26 37 / .45);opacity:0;transition:opacity 400ms var(--ease-orbit)}
+#drawer.open .bd{opacity:1}
+#drawer .panel{position:absolute;top:0;right:0;bottom:0;width:820px;background:var(--orbyt-azul-profundo);color:var(--orbyt-platino);padding:80px 90px;transform:translateX(100%);transition:transform 700ms var(--ease-enter);display:flex;flex-direction:column}
+#drawer.open .panel{transform:none}
+#drawer .x{position:absolute;top:40px;right:40px;width:48px;height:48px;border-radius:50%;border:1px solid var(--brand-border);display:grid;place-items:center;transition:all var(--dur-micro)}
+#drawer .x:hover{border-color:var(--brand-accent);color:var(--brand-accent)}
+#drawer .dk{font-family:var(--font-display);font-weight:800;font-size:64px;color:var(--brand-accent);line-height:1;letter-spacing:-.02em}
+#drawer h3{font-family:var(--font-display);font-weight:800;font-size:40px;line-height:1.1;margin:22px 0 16px;letter-spacing:-.01em}
+#drawer p{font-size:20px;line-height:1.5;font-weight:300;color:var(--brand-text-muted);max-width:38ch}
+#drawer .photo{margin-top:auto;position:relative;width:100%;height:400px;border:1px solid var(--brand-border);overflow:hidden;background:var(--brand-surface-subtle)}
+#drawer .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+#drawer .photo.has img{display:block}
+#drawer .photo .ph{position:absolute;inset:0;display:grid;place-items:center}
+#drawer .photo.has .ph{display:none}
+#drawer .photo .ph svg{position:absolute;inset:0;width:100%;height:100%}
+#drawer .photo .ph span{position:relative;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-text-muted);background:var(--orbyt-azul-profundo);padding:8px 14px;border-radius:999px;border:1px solid var(--brand-border)}
+#drawer .nav{display:flex;gap:10px;margin-top:22px}
+#drawer .nav button{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-text-muted);padding:8px 14px;border:1px solid var(--brand-border);border-radius:999px}
+#drawer .nav button:hover{color:var(--orbyt-platino);border-color:var(--orbyt-platino)}
+
+/* 12 · contacto */
+#s12 .next em.ok{color:var(--brand-text-muted)}
+
+#s10 .ask .rt{flex-direction:row!important;gap:8px;align-items:center}
+
 @media (prefers-reduced-motion:reduce){
   .a,.slide.active .a{transform:none!important;transition-duration:200ms!important}
   .grain{animation:none}
-  #mapsvg .route,#mapsvg .ring{animation:none!important}
+  #mapsvg .pulse,.iso .ipulse,#flowsvg .lk,.pinsbox .lnk{animation:none!important}
 }
 </style>
 </head>
@@ -367,6 +548,14 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
           <h2 class="h1 a" style="--i:1">En Córdoba hay talento de sobra.</h2>
           <p class="lead a" style="--i:2;margin-top:26px;max-width:32ch">Lo que falta es un lugar donde ese talento se encuentre.</p>
         </div>
+        <div class="mctl a" style="--i:3">
+          <div class="mtoggle" role="tablist" aria-label="Escenario">
+            <i class="knob"></i>
+            <button class="on" data-m="hoy" role="tab">Hoy</button>
+            <button data-m="orbyt" role="tab">Con ORBYT</button>
+          </div>
+          <p class="mcap" id="mcap"></p>
+        </div>
         <div class="facts">
           <div class="fact a" style="--i:4"><div class="big">2ª</div><p>ciudad del país en cantidad de universitarios, con una comunidad de diseño enorme.</p></div>
           <div class="fact a" style="--i:5"><div class="big c">Ningún</div><p>evento masivo propio de la disciplina.</p></div>
@@ -374,28 +563,13 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
           <div class="fact a" style="--i:7"><div class="big">En riesgo</div><p>los eventos de diseño de la ciudad que dependían del Estado.</p></div>
         </div>
       </div>
-      <div class="a" style="--i:3;position:relative">
-        <svg id="mapsvg" viewBox="0 0 760 880" aria-hidden="true">
-          <!-- Córdoba -->
-          <g transform="translate(250 330)">
-            <circle class="ring" r="34" stroke-width="1.5"/>
-            <circle class="ring r2" r="34" stroke-width="1.5"/>
-            <circle r="12" fill="#A2C617"/>
-            <text class="lbl" x="30" y="-22" style="font-family:var(--font-display);font-weight:800;font-size:28px">Córdoba</text>
-            <text class="lbl-s" x="30" y="4">Talento sin punto de encuentro</text>
-          </g>
-          <!-- rutas -->
-          <path class="route" d="M262 340 C 420 360, 560 460, 640 560"/>
-          <path class="route" d="M258 346 C 360 520, 520 700, 600 790"/>
-          <g transform="translate(640 560)">
-            <circle r="7" fill="none" stroke="#4AB9AD" stroke-width="2"/>
-            <text class="lbl" x="-14" y="-22" text-anchor="end">Buenos Aires</text>
-          </g>
-          <g transform="translate(600 790)">
-            <circle r="7" fill="none" stroke="#4AB9AD" stroke-width="2"/>
-            <text class="lbl" x="-16" y="6" text-anchor="end">Mar del Plata</text>
-          </g>
-          <text class="lbl-s" x="470" y="455" transform="rotate(32 470 455)">Hoy hay que viajar</text>
+      <div class="mapcol a" style="--i:3">
+        <svg id="mapsvg" viewBox="-60 -10 560 900" aria-hidden="true">
+          <path class="land" d="M173.1 848.8 L154.7 850.0 L144.8 841.3 L133.2 840.7 L112.5 840.7 L112.5 785.9 L119.9 797.2 L129.5 815.6 L154.7 830.4 L181.8 836.5 L173.1 848.8ZM183.4 36.0 L194.8 53.7 L202.3 34.0 L224.4 35.0 L227.5 40.2 L263.0 80.3 L278.8 84.0 L302.5 102.1 L322.4 111.7 L325.2 122.5 L306.1 159.8 L325.6 166.5 L347.3 170.3 L362.6 166.3 L380.2 147.5 L383.3 125.9 L392.9 121.2 L402.6 135.3 L402.2 154.9 L385.9 168.5 L372.9 178.4 L351.1 202.3 L325.3 235.7 L320.5 255.4 L315.3 280.6 L315.5 305.0 L311.3 310.5 L309.8 326.3 L308.5 339.2 L333.0 360.2 L330.4 377.1 L342.5 387.8 L341.5 399.8 L322.9 431.2 L294.3 444.4 L255.5 449.5 L234.2 447.0 L238.3 461.7 L234.3 480.0 L237.9 492.4 L226.3 501.0 L206.5 504.4 L187.9 495.5 L180.4 501.9 L183.1 526.3 L196.2 533.7 L206.8 525.9 L212.5 538.7 L194.7 546.3 L179.2 561.6 L176.4 586.3 L171.8 599.4 L153.5 599.5 L138.4 612.0 L132.8 630.4 L151.8 648.4 L170.3 653.4 L163.7 675.4 L140.8 689.2 L128.3 718.0 L110.6 727.7 L102.7 739.2 L108.9 764.6 L121.8 778.8 L113.7 777.6 L95.7 773.8 L49.0 770.5 L41.0 756.2 L41.4 737.8 L28.5 739.4 L21.7 730.5 L20.0 704.5 L34.8 693.7 L41.0 678.1 L38.7 665.7 L49.0 644.7 L56.0 612.2 L54.0 597.8 L62.4 593.2 L60.3 583.9 L51.4 579.0 L57.7 568.7 L49.0 559.4 L44.5 531.1 L52.3 526.1 L49.0 496.2 L53.5 471.1 L58.7 449.2 L70.3 440.3 L64.4 416.3 L64.3 393.8 L79.0 377.8 L78.5 357.3 L89.6 333.3 L89.6 310.8 L84.6 306.3 L75.7 263.9 L87.6 238.7 L85.8 214.9 L92.7 192.6 L105.4 169.6 L119.0 154.3 L113.2 144.7 L117.2 136.8 L116.6 95.9 L137.7 83.8 L144.3 58.3 L142.0 52.2 L158.1 30.0 L183.4 36.0Z"/>
+          <path class="land" d="M256.2 766.6 L279.4 751.8 L295.8 758.0 L307.4 748.2 L322.9 759.2 L317.1 767.8 L291.0 775.2 L282.3 766.6 L265.9 777.6 L256.2 766.6Z"/>
+          <g id="morbit"></g>
+          <g id="arcs"></g>
+          <g id="mcities"></g>
         </svg>
       </div>
     </div>
@@ -467,7 +641,7 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
   <section class="slide" id="s7" data-title="La experiencia" data-sub="Cada espacio, sus actividades">
     <p class="kicker a" style="--i:0"><b>07</b> La experiencia del día</p>
     <h2 class="h1 a" style="--i:1">Cada espacio, una experiencia.</h2>
-    <div id="campus" class="a" style="--i:2" aria-hidden="true"><div class="labels"></div><div class="fallback">Maqueta 3D no disponible sin conexión</div></div>
+    <div id="campus" class="a" style="--i:2" aria-hidden="true"><div class="labels"></div><svg class="iso" aria-hidden="true"></svg></div>
     <div class="wrap">
       <div class="spaces a" style="--i:3" role="tablist">
         <button class="sp on" data-s="0"><span class="n">01</span><span class="t">Auditorio</span><span class="c">4 actividades</span></button>
@@ -505,17 +679,30 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
         </div>
       </div>
     </div>
-    <p class="cap note a" style="--i:6">Maqueta esquemática del campus · distribución tentativa <span class="cian">[A CONFIRMAR]</span></p>
+    <p class="cap note a" style="--i:6">Maqueta esquemática del campus · distribución inicial adaptable</p>
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
   </section>
 
-  <!-- 08 · UN DÍA EN ÓRBITA -->
-  <section class="slide" id="s8" data-title="Un día en órbita" data-sub="Recorrido de 8:30 a 18:30">
+  <!-- 08 · UN DÍA EN ÓRBITA: CRONOGRAMA ORBITAL -->
+  <section class="slide" id="s8" data-title="Un día en órbita" data-sub="Cronograma orbital 8:30–18:30">
     <p class="kicker a" style="--i:0"><b>08</b> Un día en órbita</p>
     <h2 class="h1 a" style="--i:1">Diez horas que <span class="verde">cuentan</span>.</h2>
     <p class="lead a" style="--i:2">Charlas, talleres y encuentros que se alternan para que nadie se quede quieto ni solo.</p>
-    <svg id="daysvg" viewBox="0 0 1920 700" aria-hidden="true"></svg>
-    <p class="cap note a" style="--i:4">Recorrido ilustrativo · horarios exactos en el cronograma <span class="cian">[A DEFINIR]</span></p>
+    <div class="pillars8 a" style="--i:3">
+      <span class="cap">Pilares en esta franja</span>
+      <button class="pl" data-p="0"><i></i><b>Con sentido</b><em>0</em><span class="bar"><span></span></span></button>
+      <button class="pl" data-p="1"><i></i><b>En órbita</b><em>0</em><span class="bar"><span></span></span></button>
+      <button class="pl" data-p="2"><i></i><b>Que el momento cuente</b><em>0</em><span class="bar"><span></span></span></button>
+    </div>
+    <svg id="cronsvg" class="a" style="--i:2" viewBox="0 0 700 760" aria-hidden="true"></svg>
+    <div class="agenda a" style="--i:4">
+      <div class="ftabs" role="tablist"></div>
+      <div class="fname" id="fname"></div>
+      <div class="fsub" id="fsub"></div>
+      <ul id="flist"></ul>
+      <p class="allday">Todo el día: <b>Mural “¿Para qué diseñamos?”</b> · <b>Impresión en vivo</b></p>
+    </div>
+    <p class="cap note a" style="--i:5">Cronograma a consensuar · duración de franjas ilustrativa</p>
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
   </section>
 
@@ -526,9 +713,30 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
     <div class="take">
       <div class="tk hero a" style="--i:3"><span class="n">01</span><div><div class="hrs">8:30<br>18:30</div><p style="margin-top:18px">Un día completo de charlas, talleres y actividades.</p></div></div>
       <div class="tk a" style="--i:4"><span class="n">02</span><div><h4>Certificado</h4><p>De participación, avalado por la Universidad Siglo 21.</p></div></div>
-      <div class="tk a" style="--i:5"><span class="n">03</span><div><h4>Banco de recursos</h4><p>Plantillas, texturas y plugins. La contraseña está en su gafete.</p></div></div>
+      <div class="tk a" style="--i:5"><span class="n">03</span><div class="ia"><button class="badge" id="badge" type="button" aria-label="Mostrar acceso con clave"><svg viewBox="0 0 150 200">
+          <path d="M60 0 L75 34 L90 0" fill="none" stroke="#4AB9AD" stroke-width="2.5"/>
+          <g class="card">
+            <rect x="15" y="30" width="120" height="162" rx="8" fill="#001A25" stroke="rgb(227 227 227 / .35)"/>
+            <rect x="62" y="38" width="26" height="5" rx="2.5" fill="rgb(227 227 227 / .35)"/>
+            <rect x="15" y="50" width="120" height="22" fill="#A2C617"/>
+            <text x="75" y="65" text-anchor="middle" font-family="var(--font-body)" font-size="9.5" letter-spacing="2" font-weight="600" fill="#001A25">ASISTENTE</text>
+            <rect x="27" y="84" width="66" height="7" rx="3.5" fill="rgb(227 227 227 / .55)"/>
+            <rect x="27" y="97" width="44" height="6" rx="3" fill="rgb(227 227 227 / .3)"/>
+            <circle cx="116" cy="92" r="7" fill="#4AB9AD"/>
+            <text x="27" y="122" font-family="var(--font-body)" font-size="8.5" letter-spacing="1.6" fill="rgb(227 227 227 / .6)">CLAVE DE ACCESO</text>
+            <rect class="field" x="25" y="128" width="100" height="26" rx="13"/>
+            <g transform="translate(36 134)">
+              <path class="shackle" d="M2 7 V4.5 a4 4 0 0 1 8 0 V7" fill="none" stroke="currentColor" stroke-width="1.6" style="color:#E3E3E3"/>
+              <rect x="0" y="7" width="12" height="9" rx="2" fill="#E3E3E3"/>
+            </g>
+            <text class="mask" x="85" y="145" text-anchor="middle">• • • • • •</text>
+            <text class="ok" x="85" y="144.5" text-anchor="middle">ACCESO OK</text>
+            <text class="hint" x="75" y="178" text-anchor="middle">Tocá el gafete</text>
+            <g class="res"><text x="75" y="176" text-anchor="middle">Plantillas · Texturas · Plugins</text></g>
+          </g>
+        </svg></button></div><div><h4>Banco de recursos</h4><p>Plantillas, texturas y plugins. La contraseña está en su gafete.</p></div></div>
       <div class="tk a" style="--i:6"><span class="n">04</span><div><h4>Algo hecho con sus manos</h4><p>Un vaso intervenido, una serigrafía, su póster en la muestra.</p></div></div>
-      <div class="tk a" style="--i:7"><div id="pins"></div><span class="n">05</span><div><h4>Contactos nuevos</h4><p>Facilitados por pines de colores según el área de interés.</p></div></div>
+      <div class="tk a" style="--i:7"><span class="n">05</span><div class="ia"><div class="pinsbox" id="pinsbox"></div></div><div><h4>Contactos nuevos</h4><p>Facilitados por pines de colores según el área de interés.</p></div></div>
     </div>
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
   </section>
@@ -539,23 +747,20 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
       <p class="kicker a" style="--i:0"><b>10</b> Cómo funciona sin presupuesto</p>
       <h2 class="h1 a" style="--i:1">No le pedimos fondos a la universidad.</h2>
       <div class="zero a" style="--i:2">$0<small>de presupuesto de la Siglo 21.</small></div>
-      <div class="fund">
-        <div class="a" style="--i:4"><span class="n">01</span><p><b>Recaudación propia</b></p></div>
-        <div class="a" style="--i:5"><span class="n">02</span><p><b>Canjes con sponsors</b><span>Speakers, impresión, merch y música, por acuerdos de visibilidad.</span></p></div>
-        <div class="a" style="--i:6"><span class="n">03</span><p><b>Food trucks</b><span>Cubren almuerzo y merienda.</span></p></div>
-      </div>
+      <svg id="flowsvg" class="a" style="--i:4" viewBox="0 0 780 420" aria-hidden="true"></svg>
     </div>
     <div class="r">
       <p class="kicker a" style="--i:2"><b>El pedido</b> Lo que necesitamos de la Siglo 21</p>
       <h3 class="a" style="--i:3">Espacios, un aval y una fecha.</h3>
       <ul class="ask">
-        <li class="a" style="--i:5"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:0" d="M7 13.5l4 4 8-9"/></svg><span>Auditorio y anfiteatro</span></li>
-        <li class="a" style="--i:6"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:1" d="M7 13.5l4 4 8-9"/></svg><span>Patio central</span></li>
-        <li class="a" style="--i:7"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:2" d="M7 13.5l4 4 8-9"/></svg><span>Dos o tres aulas<small>Para talleres y rondas</small></span></li>
-        <li class="a" style="--i:8"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:3" d="M7 13.5l4 4 8-9"/></svg><span>Aval institucional para el certificado</span></li>
-        <li class="a" style="--i:9"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:4" d="M7 13.5l4 4 8-9"/></svg><span>Permiso de ingreso de food trucks</span></li>
-        <li class="a" style="--i:10"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:5" d="M7 13.5l4 4 8-9"/></svg><span>Una fecha<small>[A DEFINIR]</small></span></li>
+        <li class="a" style="--i:5" data-k="auditorio"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Auditorio y anfiteatro<span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
+        <li class="a" style="--i:6" data-k="patio"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Patio central<span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
+        <li class="a" style="--i:7" data-k="aulas"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Dos o tres aulas<small>Para talleres y rondas</small><span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
+        <li class="a" style="--i:8" data-k="aval"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Aval institucional para el certificado<span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
+        <li class="a" style="--i:9" data-k="foodtrucks"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Permiso de ingreso de food trucks<span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
+        <li class="a" style="--i:10" data-k="fecha"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" d="M7 13.5l4 4 8-9"/></svg><span>Una fecha<small>Fecha a definir en conjunto</small><span class="note" contenteditable="true" spellcheck="false"></span></span><span class="rt"><em class="tag">Acordado</em><button class="nb" type="button">+ Nota</button></span></li>
       </ul>
+      <div class="tools a" style="--i:11"><span>Tocá un ítem para marcarlo como acordado</span><button type="button" id="askreset">Limpiar marcas</button></div>
     </div>
   </section>
 
@@ -566,12 +771,13 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
       <div>
         <h2 class="h1 a" style="--i:1">Somos de la casa. Y ya lo hicimos.</h2>
         <p class="lead a" style="--i:2">Un equipo organizado por áreas, como contenidos y comunicación, para llevarlo a la realidad.</p>
+        <p class="hint11 a" style="--i:7">Tocá cada credencial para ver la evidencia</p>
       </div>
       <ul class="creds">
-        <li class="a" style="--i:3"><span class="k">S21</span><div><b>Egresados de la Siglo 21</b><span>Con un estudio de branding propio.</span></div></li>
-        <li class="a" style="--i:4"><span class="k">FIE</span><div><b>Foro Internacional de Emprendedores</b><span>Lideramos su comunicación y producción para Junior Achievement.</span></div></li>
-        <li class="a" style="--i:5"><span class="k">×2</span><div><b>Dos ediciones de CTRL G</b><span>Nuestro evento de networking para creativos, muy bien recibido por la comunidad.</span></div></li>
-        <li class="a" style="--i:6"><span class="k">TFG</span><div><b>Nació en esta universidad</b><span>ORBYT fue un Trabajo Final de Grado de la Licenciatura en Diseño Gráfico.</span></div></li>
+        <li class="a" style="--i:3" data-c="0" tabindex="0" role="button"><span class="k">S21</span><div><b>Egresados de la Siglo 21</b><span>Con un estudio de branding propio.</span></div><span class="plus">+</span></li>
+        <li class="a" style="--i:4" data-c="1" tabindex="0" role="button"><span class="k">FIE</span><div><b>Foro Internacional de Emprendedores</b><span>Lideramos su comunicación y producción para Junior Achievement.</span></div><span class="plus">+</span></li>
+        <li class="a" style="--i:5" data-c="2" tabindex="0" role="button"><span class="k">×2</span><div><b>Dos ediciones de CTRL G</b><span>Nuestro evento de networking para creativos, muy bien recibido por la comunidad.</span></div><span class="plus">+</span></li>
+        <li class="a" style="--i:6" data-c="3" tabindex="0" role="button"><span class="k">TFG</span><div><b>Nació en esta universidad</b><span>ORBYT fue un Trabajo Final de Grado de la Licenciatura en Diseño Gráfico.</span></div><span class="plus">+</span></li>
       </ul>
     </div>
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
@@ -587,12 +793,27 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
       <span class="a verde" style="--i:5">momento cuente.</span>
     </h2>
     <div class="next">
-      <div class="a" style="--i:7"><span class="n">01</span><b>Definir la fecha</b><em>[A DEFINIR]</em></div>
-      <div class="a" style="--i:8"><span class="n">02</span><b>Reunión de coordinación</b><em>[A DEFINIR]</em></div>
+      <div class="a" style="--i:7"><span class="n">01</span><b>Definir la fecha</b><em class="ok">En conjunto</em></div>
+      <div class="a" style="--i:8"><span class="n">02</span><b>Reunión de coordinación</b><em class="ok">A coordinar</em></div>
+      <!-- ============ ✏️ CONTACTO: editá solo esta línea ============ -->
       <div class="a" style="--i:9"><span class="n">03</span><b>Contacto</b><em>[COMPLETAR CONTACTO]</em></div>
+      <!-- ============================================================ -->
     </div>
     <div class="logo a" style="--i:10" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></div>
   </section>
+
+  <!-- Drawer de credenciales (slide 11) -->
+  <div id="drawer" aria-hidden="true">
+    <div class="bd"></div>
+    <aside class="panel" role="dialog" aria-modal="true" aria-label="Detalle de credencial">
+      <button class="x" type="button" aria-label="Cerrar"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <div class="dk"></div>
+      <h3></h3>
+      <p></p>
+      <div class="photo"><img alt=""><div class="ph"><svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#065F78" stroke-width="1.2" transform="translate(320 200) rotate(-23.5)"><ellipse rx="300" ry="120"/><ellipse rx="230" ry="92"/><ellipse rx="160" ry="64" stroke="#4AB9AD"/><ellipse rx="90" ry="36"/></g><circle cx="320" cy="200" r="5" fill="#A2C617"/></svg><span>Foto en preparación</span></div></div>
+      <div class="nav"><button type="button" data-d="-1">← Anterior</button><button type="button" data-d="1">Siguiente →</button></div>
+    </aside>
+  </div>
 
 </main>
 </div>
@@ -617,6 +838,7 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 const C = {azul:'#001A25', platino:'#E3E3E3', verde:'#A2C617', cian:'#4AB9AD', bruma:'#065F78'};
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TILT = -23.5 * Math.PI/180;
+const modal = {open:false, close(){}};
 const easeOrbit = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
 
 /* ============ escenario escalado ============ */
@@ -637,6 +859,8 @@ const progress = document.getElementById('progress');
 function go(i){
   i = Math.max(0, Math.min(N-1, i));
   if(i===cur) return;
+  if(modal.open) modal.close();
+  const vp = document.getElementById('viewport'); vp.scrollLeft = vp.scrollTop = 0;
   const prev = cur;
   if(prev>=0) slides[prev].classList.remove('active');
   cur = i;
@@ -654,6 +878,9 @@ document.getElementById('prev').onclick = () => go(cur-1);
 document.getElementById('next').onclick = () => go(cur+1);
 
 addEventListener('keydown', e => {
+  const tg = e.target;
+  if(tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))){ if(e.key==='Escape') tg.blur(); return; }
+  if(modal.open){ if(['Escape','ArrowLeft','ArrowRight',' ','PageUp','PageDown','g','G'].includes(e.key)){ e.preventDefault(); modal.close(); } return; }
   if(e.key==='g' || e.key==='G'){ toggleOv(); return; }
   if(ovOpen){ if(e.key==='Escape') toggleOv(false); return; }
   if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); go(cur+1); }
@@ -663,7 +890,7 @@ addEventListener('keydown', e => {
 });
 let tx=null;
 addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
-addEventListener('touchend',e=>{ if(tx===null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>50) go(cur+(d<0?1:-1)); tx=null; });
+addEventListener('touchend',e=>{ if(tx===null || modal.open || (e.target.closest && e.target.closest('[contenteditable]'))) { tx=null; return; } const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>50) go(cur+(d<0?1:-1)); tx=null; });
 
 /* ============ vista general (G) ============ */
 const ov = document.getElementById('overview'), ovgrid = document.getElementById('ovgrid');
@@ -715,13 +942,13 @@ addEventListener('resize', resizeBg); resizeBg();
 // estados por slide: x,y (fracción del viewport desde el centro), escala, rotación extra (°), opacidad
 const HS = [
   {x:0,    y:0.02, s:1.00, r:0,   o:1},    // 01 portada
-  {x:0.62, y:0.55, s:0.80, r:8,   o:.7},   // 02
+  {x:0.80, y:1.05, s:0.80, r:8,   o:.6},   // 02
   {x:0.20, y:1.15, s:1.10, r:-6,  o:.6},   // 03
   {x:0.25, y:-0.08,s:0.48, r:4,   o:.4},   // 04
   {x:0.78, y:0.15, s:0.85, r:-8,  o:.9},   // 05
   {x:0.42, y:0.05, s:0.86, r:6,   o:.4},   // 06
   {x:-0.80,y:1.15, s:1.10, r:-4,  o:.35},  // 07
-  {x:0.00, y:1.05, s:1.15, r:2,   o:.45},  // 08
+  {x:-0.10,y:1.30, s:1.15, r:2,   o:.35},  // 08
   {x:-0.30,y:-0.62,s:1.00, r:8,   o:.45},  // 09
   {x:-0.62,y:1.22, s:0.90, r:-6,  o:.5},   // 10
   {x:0.40, y:0.40, s:1.00, r:0,   o:0},    // 11 (claro)
@@ -948,11 +1175,126 @@ const hooks = {};
     groups.forEach((g,k)=>g.classList.toggle('on',k===i));
     labels.forEach((l,k)=>{ l.classList.toggle('on',k===i); l.classList.toggle('dim',k!==i); });
     api?.select(i);
+    isoSelect(i);
     if(user){ auto=false; clearInterval(autoT); }
   }
   btns.forEach(b=>b.onclick=()=>select(+b.dataset.s,true));
 
+  // ===== planta isométrica en SVG puro: se ve siempre primero y queda si no hay conexión/WebGL =====
+  const iso = box.querySelector('svg.iso'), NSI = 'http://www.w3.org/2000/svg';
+  const LITE = /[?&](lite|offline)\b/.test(location.search);
+  const isoG = [], isoL = [];
+  let isoPulse = [], isoPeople = [], isoRun = false, isoT = 0;
+  const K = 9.4, c30 = Math.cos(Math.PI/6);
+  const pr = (x,y,z) => [ (x - z)*c30*K, (x + z)*0.5*K - y*K ];
+  (function buildIso(){
+    const mk = (t,a,p) => { const e=document.createElementNS(NSI,t); for(const k in a) e.setAttribute(k,a[k]); (p||iso).appendChild(e); return e; };
+    const pts = arr => arr.map(p=>pr(...p).map(v=>v.toFixed(1)).join(',')).join(' ');
+    const poly = (arr, cls, p) => mk('polygon', {points: pts(arr), class: cls}, p);
+    const boxIso = (x0,x1,z0,z1,h,p,ctx) => {
+      poly([[x0,0,z1],[x1,0,z1],[x1,h,z1],[x0,h,z1]], ctx?'ctx-s':'f-s', p);
+      poly([[x1,0,z0],[x1,0,z1],[x1,h,z1],[x1,h,z0]], ctx?'ctx-e':'f-e', p);
+      poly([[x0,h,z0],[x1,h,z0],[x1,h,z1],[x0,h,z1]], ctx?'ctx-top':'f-top', p);
+    };
+    const ground = (cx,cz,rx,rz,cls,p,n=48) => poly(Array.from({length:n},(_,i)=>{const a=i/n*Math.PI*2; return [cx+Math.cos(a)*rx,0,cz+Math.sin(a)*rz];}), cls, p);
+    const grp = i => { const g = mk('g',{class:'isp','data-s':i}); g.addEventListener('click',()=>select(i,true)); isoG[i]=g; return g; };
+
+    // base, paseo, prado y lago
+    poly([[-49,0,-28],[49,0,-28],[49,0,44],[-49,0,44]], 'base');
+    poly([[-47,0,-7.8],[47,0,-7.8],[47,0,-3.2],[-47,0,-3.2]], 'path');
+    [18,22.5,27].forEach((z,i)=>{ const w=(18-i*1.5)/2; poly([[-w,0,z-1.8],[w,0,z-1.8],[w,0,z+1.8],[-w,0,z+1.8]], 'path'); });
+    ground(0,36,13.6,8,'lake');
+
+    // pulso de foco (debajo de los volúmenes)
+    const pg = mk('g');
+    isoPulse = [mk('ellipse',{class:'ipulse'},pg), mk('ellipse',{class:'ipulse p2'},pg)];
+
+    // 04 Patio central (plano)
+    const gD = grp(3);
+    poly([[-12,0,-0.5],[12,0,-0.5],[12,0,15.5],[-12,0,15.5]], 'f-plaza', gD);
+
+    // contexto y edificios del paseo (de atrás hacia adelante)
+    const ctxG = mk('g');
+    boxIso(-45.5,-36.5,-18.5,-9.5,4,ctxG,true);
+    const gA = grp(0); boxIso(-32,-16,-20.5,-9.5,6.5,gA);
+    // bóveda del auditorio (perfil semicircular sobre el volumen)
+    const vp = []; for(let i=0;i<=16;i++){ const a=Math.PI*i/16; vp.push([6.5+Math.sin(a)*3, -15+Math.cos(a)*5.5]); }
+    for(let i=16;i>0;i--){ const [y0,z0]=vp[i], [y1,z1]=vp[i-1]; poly([[-32,y0,z0],[-16,y0,z0],[-16,y1,z1],[-32,y1,z1]], 'f-top', gA); }
+    poly(vp.map(([y,z])=>[-16,y,z]), 'f-e', gA);
+    const gC = grp(2); boxIso(-9,3,-19,-11,7.5,gC); boxIso(6,18,-19,-11,7.5,gC);
+    boxIso(28.5,35.5,-20.5,-13.5,21,mk('g'),true);
+    boxIso(36,44,-17,-10,3,mk('g'),true);
+
+    // árboles, food trucks, mural y serigrafía
+    const pd = mk('g');
+    [[-13.5,1],[-13.5,6],[-13.5,11],[13.5,1],[13.5,6],[-9,17],[9,17],[-15,-1.5],[15,-1.5]].forEach(([x,z])=>{ const [a,b]=pr(x,0,z), [c,d]=pr(x,3,z); mk('polygon',{points:`${(a-8).toFixed(1)},${b.toFixed(1)} ${(a+8).toFixed(1)},${b.toFixed(1)} ${c.toFixed(1)},${d.toFixed(1)}`, class:'tree'}, pd); });
+    [-4,0,4].forEach(x=>{ const g=mk('g',{},pd); [['prop',[[x-1.5,1.8,13.2],[x+1.5,1.8,13.2],[x+1.5,1.8,14.8],[x-1.5,1.8,14.8]]],['prop',[[x-1.5,0,14.8],[x+1.5,0,14.8],[x+1.5,1.8,14.8],[x-1.5,1.8,14.8]]],['prop',[[x+1.5,0,13.2],[x+1.5,0,14.8],[x+1.5,1.8,14.8],[x+1.5,1.8,13.2]]]].forEach(([c,a])=>poly(a,c,g)); });
+    poly([[-11,0,2.2],[-4,0,2.2],[-4,2.8,2.2],[-11,2.8,2.2]], 'prop', pd);
+    poly([[6.4,1,2.4],[8.6,1,2.4],[8.6,1,4.6],[6.4,1,4.6]], 'prop', pd);
+
+    // 02 Anfiteatro: gradas en semicírculo
+    const gB = grp(1);
+    const th = Math.PI/2 + 0.35, cT = Math.cos(th), sT = Math.sin(th);
+    const rot = (lx,lz) => [27 + lx*cT + lz*sT, 8 - lx*sT + lz*cT];
+    for(let i=5;i>=0;i--){
+      const r = 3.4 + i*1.25, R2 = r + 1.25, h = 0.32*(i+1), arr = [];
+      for(let k=0;k<=20;k++){ const t=Math.PI*k/20; const [x,z]=rot(Math.cos(t)*R2, -Math.sin(t)*R2); arr.push([x,h,z]); }
+      for(let k=20;k>=0;k--){ const t=Math.PI*k/20; const [x,z]=rot(Math.cos(t)*r, -Math.sin(t)*r); arr.push([x,h,z]); }
+      poly(arr, i%2? 'f-top' : 'f-s', gB);
+    }
+    poly([[-2.75,0.45,-0.1],[2.75,0.45,-0.1],[2.75,0.45,2.5],[-2.75,0.45,2.5]].map(([x,y,z])=>{ const [a,b]=rot(x,z); return [a,y,b]; }), 'prop', gB);
+
+    // personas (puntos sobre el paseo y alrededor de cada espacio)
+    const peopleG = mk('g');
+    for(let i=0;i<46;i++){
+      const walker = i < 16, s = SP[i%4];
+      isoPeople.push(walker ? {w:true, x:-45+Math.random()*90, z:-5.5+(Math.random()-.5)*3, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3), e: mk('circle',{r:2.2, class:'ppl'},peopleG)}
+                            : {w:false, c:s.focus, a:Math.random()*Math.PI*2, rx:3+Math.random()*s.ring*.6, rz:2+Math.random()*s.ring*.4, sp:(.2+Math.random()*.3)*(Math.random()<.5?-1:1), e: mk('circle',{r:2.2, class:'ppl', fill: Math.random()<.4? C.verde : C.platino},peopleG)});
+    }
+
+    // etiquetas
+    SP.forEach((s,i)=>{
+      const [x,y] = pr(...s.at);
+      const g = mk('g',{class:'ilabel', transform:`translate(${x.toFixed(1)} ${(y-8).toFixed(1)})`});
+      g.addEventListener('click',()=>select(i,true));
+      const w = s.name.length*9.2 + 28;
+      mk('line',{x1:0,y1:0,x2:0,y2:-30},g);
+      mk('rect',{x:-w/2,y:-64,width:w,height:34,rx:17},g);
+      const t = mk('text',{x:0,y:-41,'text-anchor':'middle'},g); t.textContent = s.name;
+      isoL[i] = g;
+    });
+
+    // encuadre
+    const B = [[-49,0,-28],[49,0,-28],[49,0,44],[-49,0,44],[32,24,-17]].map(p=>pr(...p));
+    const xs = B.map(b=>b[0]), ys = B.map(b=>b[1]);
+    const x0 = Math.min(...xs)-20, x1 = Math.max(...xs)+20, y0 = Math.min(...ys)-80, y1 = Math.max(...ys)+20;
+    iso.setAttribute('viewBox', `${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1-x0).toFixed(0)} ${(y1-y0).toFixed(0)}`);
+    iso.setAttribute('preserveAspectRatio','xMidYMid meet');
+  })();
+  function isoSelect(i){
+    isoG.forEach((g,k)=>g.classList.toggle('on',k===i));
+    isoL.forEach((g,k)=>g.classList.toggle('on',k===i));
+    const s = SP[i], [cx,cy] = pr(s.focus[0],0,s.focus[2]);
+    isoPulse.forEach(e=>{ e.setAttribute('cx',cx.toFixed(1)); e.setAttribute('cy',cy.toFixed(1)); e.setAttribute('rx',(s.ring*K*c30*Math.SQRT2).toFixed(1)); e.setAttribute('ry',(s.ring*K*0.5*Math.SQRT2).toFixed(1)); });
+  }
+  function isoLoop(now){
+    if(!isoRun) return;
+    const dt = Math.min(64, now-isoT)/1000; isoT = now;
+    if(!box.classList.contains('three-on')){
+      isoPeople.forEach(p=>{
+        let x, z;
+        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>46) p.x=-46; if(p.x<-46) p.x=46; x=p.x; z=p.z; }
+        else { if(!RM) p.a += p.sp*dt; x=p.c[0]+Math.cos(p.a)*p.rx; z=p.c[2]+Math.sin(p.a)*p.rz; }
+        const [a,b] = pr(x,0.6,z); p.e.setAttribute('cx',a.toFixed(1)); p.e.setAttribute('cy',b.toFixed(1));
+      });
+    }
+    requestAnimationFrame(isoLoop);
+  }
+
   async function init(){
+    if(LITE) throw new Error('modo liviano');
+    const tc = document.createElement('canvas');
+    if(!(tc.getContext('webgl2') || tc.getContext('webgl'))) throw new Error('sin WebGL');
     const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js');
     const V = (x,y,z)=>new THREE.Vector3(x,y,z);
     const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
@@ -1088,79 +1430,369 @@ const hooks = {};
     enter(){
       select(cur);
       run = true;
-      (loading ||= init()).then(()=>{ if(run) api.start(); }).catch(()=>{ box.querySelector('.fallback').style.display='grid'; labels.forEach(l=>l.style.display='none'); });
+      isoRun = true; isoT = performance.now(); requestAnimationFrame(isoLoop);
+      (loading ||= init()).then(()=>{ if(run){ api.start(); requestAnimationFrame(()=>box.classList.add('three-on')); } }).catch(()=>{ box.classList.remove('three-on'); });
       clearInterval(autoT);
       if(auto) autoT = setInterval(()=>select((cur+1)%SP.length), 6500);
     },
-    leave(){ run = false; clearInterval(autoT); }
+    leave(){ run = false; isoRun = false; clearInterval(autoT); }
   };
 })();
 
 
-/* ---- PIEZA 4 · el día como trayectoria (slide 08) ---- */
+/* ---- PIEZA 6 · mapa de Argentina: hoy vs. con ORBYT (slide 02) ---- */
 (() => {
-  const svg = document.getElementById('daysvg'), NS='http://www.w3.org/2000/svg';
-  // arco: media elipse inclinada que atraviesa la slide
-  const pts = [
-    {t:'Acreditación', s:'Gafete · pin de color', k:1},
-    {t:'Conferencia magistral', s:'Todo el festival junto'},
-    {t:'Networking', s:'Media mañana'},
-    {t:'Charlas · rondas · workshops', s:'En paralelo'},
-    {t:'Almuerzo', s:'Food trucks · vasos'},
-    {t:'ORBYT Awards', s:'Primera entrega', k:1},
-    {t:'Juegos y co-diseño', s:'Por la tarde'},
-    {t:'Merienda', s:'Networking'},
-    {t:'Conferencia magistral', s:'Antes del cierre'},
-    {t:'Cierre y despedida', s:'Awards · co-diseño · DJ', k:1}
-  ];
-  const x0=190, x1=1730, yb=470, amp=200;
-  const P = u => { const x = x0+(x1-x0)*u; const y = yb - Math.sin(u*Math.PI)*amp; return [x,y]; };
-  let dpath = ''; for(let i=0;i<=120;i++){ const [x,y]=P(i/120); dpath += (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1); }
-  svg.innerHTML = `<path class="arc" d="${dpath}"/><path class="arc-on" id="arcon" d="${dpath}"/>
-    <text class="hr" x="${x0-70}" y="${P(0)[1]+110}">8:30</text>
-    <text class="hr" x="${x1-120}" y="${P(1)[1]+110}">18:30</text>`;
-  const arcon = svg.querySelector('#arcon'); const L = arcon.getTotalLength ? 2400 : 2400;
-  arcon.style.strokeDasharray = L; arcon.style.strokeDashoffset = L;
-  const els = pts.map((p,i)=>{
-    const u = (i+0.5)/pts.length; const [x,y]=P(u);
-    const up = i%2===0;
-    const g = document.createElementNS(NS,'g'); g.setAttribute('class','pt'+(p.k?' k':'')); g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-    const ly = up ? -40 : 58;
-    g.innerHTML = `<line x1="0" y1="${up?-12:12}" x2="0" y2="${up?-26:26}" stroke="rgba(227,227,227,.3)"/>
-      <circle r="${p.k?10:7}"/>
-      <text text-anchor="middle" y="${ly}">${p.t}</text>
-      <text class="s" text-anchor="middle" y="${ly+(up?-26:24)}">${p.s}</text>`;
-    svg.appendChild(g); return g;
+  const svg = document.getElementById('mapsvg'), NS = 'http://www.w3.org/2000/svg';
+  const arcsG = svg.querySelector('#arcs'), citiesG = svg.querySelector('#mcities'), orbG = svg.querySelector('#morbit');
+  const cap = document.getElementById('mcap');
+  const tg = document.querySelector('#s2 .mtoggle'), knob = tg.querySelector('.knob'), tbtns = [...tg.querySelectorAll('button')];
+  const P = {cba:[198.4,265.3], ba:[310.7,343.3], mdq:[326.8,426.7]};
+  const TXT = {
+    hoy:   'Hoy, para crecer hay que irse.<small>Para escuchar referentes, mostrar el trabajo o hacer contactos, el talento cordobés viaja a Buenos Aires o Mar del Plata.</small>',
+    orbyt: 'Con ORBYT, el crecimiento pasa acá.<small>Córdoba se vuelve un nodo propio: el talento se encuentra, se queda y gravita alrededor de su ciudad.</small>'
+  };
+  const el = (t, a={}, p) => { const e = document.createElementNS(NS, t); for(const k in a) e.setAttribute(k, a[k]); if(p) p.appendChild(e); return e; };
+
+  // arcos curvos Córdoba ↔ destino
+  const arcs = ['ba','mdq'].map((k,ai) => {
+    const [x0,y0] = P.cba, [x1,y1] = P[k];
+    const mx=(x0+x1)/2, my=(y0+y1)/2, dx=x1-x0, dy=y1-y0, L=Math.hypot(dx,dy);
+    let nx = dy/L, ny = -dx/L; if(ny>0){ nx=-nx; ny=-ny; }
+    const cx = mx + nx*L*(0.34+ai*0.08), cy = my + ny*L*(0.34+ai*0.08);
+    const path = el('path', {d:`M${x0} ${y0} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x1} ${y1}`, class:'arc out'}, arcsG);
+    const len = path.getTotalLength();
+    const dots = Array.from({length:6}, (_,i) => ({e: el('circle', {r:3, fill:C.cian}, arcsG), o: i/6}));
+    return {path, len, dots};
   });
-  let timers=[];
-  hooks.s8 = {
-    enter(){
-      try{ const len = arcon.getTotalLength(); arcon.style.strokeDasharray=len; arcon.style.strokeDashoffset=len; }catch(e){}
-      arcon.style.transition='none'; arcon.getBoundingClientRect();
-      arcon.style.transition = `stroke-dashoffset ${RM?0:2600}ms cubic-bezier(0.65,0,0.35,1) 500ms`;
-      arcon.style.strokeDashoffset = 0;
-      els.forEach((g,i)=>{ g.classList.remove('show'); timers.push(setTimeout(()=>g.classList.add('show'), RM?0:700 + i*230)); });
-    },
-    leave(){ timers.forEach(clearTimeout); timers=[]; }
-  };
-})();
 
-/* ---- slide 09 · pines de colores ---- */
-(() => {
-  const box = document.getElementById('pins');
-  const cols = [C.verde,C.cian,C.platino,C.bruma,C.verde,C.cian];
-  const pins = cols.map((c,i)=>{ const p=document.createElement('i'); p.style.background=c; if(c===C.bruma) p.style.boxShadow='inset 0 0 0 2px '+C.cian; box.appendChild(p); return {el:p, a:i/cols.length*Math.PI*2, sp:.25+i*.04}; });
-  let run=false, lt=0;
+  // órbitas locales alrededor de Córdoba (modo Con ORBYT)
+  const og = el('g', {transform:`translate(${P.cba[0]} ${P.cba[1]}) rotate(-23.5)`}, orbG);
+  el('ellipse', {class:'orb', rx:38, ry:15}, og);
+  el('ellipse', {class:'orb', rx:64, ry:26}, og);
+  const locals = Array.from({length:10}, (_,i) => ({e: el('circle', {r:i%3===0?3:2.2, fill: i%2? C.verde : C.platino, opacity:0}, orbG), a: i/10*Math.PI*2, r: i%2? [38,15] : [64,26], sp: (i%2? .9 : .55)}));
+
+  // ciudades
+  const city = (k, name, sub, anchor, lx, ly, big) => {
+    const g = el('g', {class:'city', transform:`translate(${P[k][0]} ${P[k][1]})`}, citiesG);
+    const r1 = el('circle', {class:'pulse', r:14, stroke: big? C.verde : C.cian}, g);
+    const r2 = el('circle', {class:'pulse p2', r:14, stroke: big? C.verde : C.cian}, g);
+    const dot = el('circle', {class:'dot', r: big? 7 : 5, fill: big? C.verde : 'none', stroke: big? 'none' : C.cian, 'stroke-width':2}, g);
+    const t = el('text', {x:lx, y:ly, 'text-anchor':anchor, class: big? 'cba-name' : ''}, g); t.textContent = name;
+    const s = el('text', {x:lx, y:ly+18, 'text-anchor':anchor, class:'s'}, g); s.textContent = sub;
+    return {g, r1, r2, dot, s};
+  };
+  const CBA = city('cba','Córdoba','Talento sin punto de encuentro','end',-18,-20,true);
+  const BA  = city('ba','Buenos Aires','Destino hoy','start',14,-4,false);
+  const MDQ = city('mdq','Mar del Plata','Destino hoy','start',14,4,false);
+
+  let mode = 'hoy', run = false, lt = 0;
+  function setMode(m){
+    mode = m;
+    tbtns.forEach(b => b.classList.toggle('on', b.dataset.m===m));
+    const on = tg.querySelector('button.on');
+    knob.style.width = on.offsetWidth+'px'; knob.style.transform = `translateX(${on.offsetLeft-4}px)`;
+    svg.classList.toggle('orbyt', m==='orbyt');
+    arcs.forEach(a => { a.path.setAttribute('class', 'arc '+(m==='orbyt'?'in':'out')); a.dots.forEach(d=>d.e.setAttribute('fill', m==='orbyt'? C.verde : C.cian)); });
+    cap.style.opacity = 0;
+    setTimeout(()=>{ cap.innerHTML = TXT[m]; cap.style.opacity = 1; }, 220);
+    CBA.dot.setAttribute('r', m==='orbyt'? 12 : 7);
+    CBA.s.textContent = m==='orbyt'? 'Nodo propio del diseño gráfico' : 'Talento sin punto de encuentro';
+    [BA,MDQ].forEach(c => { c.s.textContent = m==='orbyt'? 'Referentes que llegan' : 'Destino hoy'; c.r1.style.display = c.r2.style.display = m==='orbyt'? 'none' : ''; });
+    CBA.r1.style.display = CBA.r2.style.display = m==='orbyt'? '' : 'none';
+  }
+  tbtns.forEach(b => b.onclick = () => setMode(b.dataset.m));
+
   function frame(now){
-    if(!run) return; const dt=Math.min(64,now-lt)/1000; lt=now;
-    const w=box.clientWidth, h=box.clientHeight;
-    pins.forEach((p,i)=>{ if(!RM) p.a+=p.sp*dt;
-      const ex=Math.cos(p.a)*w*.34, ey=Math.sin(p.a)*h*.12;
-      const x=w*.5+ex*Math.cos(TILT)-ey*Math.sin(TILT), y=h*.36+ex*Math.sin(TILT)+ey*Math.cos(TILT);
-      p.el.style.transform=`translate(${x-9}px,${y-9}px)`; });
+    if(!run) return;
+    const dt = Math.min(64, now-lt)/1000; lt = now;
+    const T = now/1000;
+    arcs.forEach(a => a.dots.forEach(d => {
+      let t = ((RM? d.o : (d.o + T*0.16)) % 1);
+      if(mode==='orbyt') t = 1 - t;
+      const p = a.path.getPointAtLength(t*a.len);
+      d.e.setAttribute('cx', p.x.toFixed(1)); d.e.setAttribute('cy', p.y.toFixed(1));
+      d.e.setAttribute('opacity', (Math.sin(t*Math.PI)*.9+.1).toFixed(2));
+    }));
+    const ct = Math.cos(TILT), st = Math.sin(TILT);
+    locals.forEach(l => {
+      if(!RM) l.a += l.sp*dt;
+      const ex = Math.cos(l.a)*l.r[0], ey = Math.sin(l.a)*l.r[1];
+      l.e.setAttribute('cx', (P.cba[0] + ex*ct - ey*st).toFixed(1));
+      l.e.setAttribute('cy', (P.cba[1] + ex*st + ey*ct).toFixed(1));
+      const o = +l.e.getAttribute('opacity'), target = mode==='orbyt'? 1 : 0;
+      l.e.setAttribute('opacity', (o + (target-o)*Math.min(1,dt*3)).toFixed(3));
+    });
     requestAnimationFrame(frame);
   }
-  hooks.s9 = { enter(){run=true; lt=performance.now(); requestAnimationFrame(frame);}, leave(){run=false;} };
+  hooks.s2 = { enter(){ setMode(mode); run = true; lt = performance.now(); requestAnimationFrame(frame); }, leave(){ run = false; } };
+  setMode('hoy');
+})();
+
+/* ---- PIEZA 4 · cronograma orbital por franjas (slide 08) ---- */
+(() => {
+  const PIL = [ {n:'Con sentido', c:C.verde}, {n:'En órbita', c:C.cian}, {n:'Que el momento cuente', c:C.platino} ];
+  // p = pilar (0 Con sentido · 1 En órbita · 2 Que el momento cuente)
+  const F = [
+    {n:'Mañana',   s:'Desde las 8:30 · apertura y primeras charlas', a:[
+      {t:'Acreditación', d:'Gafete, tríptico y pin de color', p:1},
+      {t:'Conferencia magistral', d:'Todo el festival en el auditorio', p:0},
+      {t:'Networking de media mañana', d:'Música en vivo o DJ', p:1},
+      {t:'Charlas temáticas', d:'45 minutos, en paralelo', p:0},
+      {t:'Revisión de portfolios', d:'Devoluciones honestas en vivo', p:0},
+      {t:'Rondas íntimas', d:'~20 personas con un referente', p:1},
+      {t:'Workshops', d:'Con cupo e inscripción previa', p:2}
+    ]},
+    {n:'Mediodía', s:'Almuerzo y primera entrega de premios', a:[
+      {t:'Almuerzo en food trucks', d:'Segundo momento de networking', p:1},
+      {t:'Vasos intervenidos', d:'Fibrones en mano mientras se come', p:2},
+      {t:'ORBYT Awards · 1ª entrega', d:'Después del almuerzo', p:2}
+    ]},
+    {n:'Tarde',    s:'Debate, co-diseño y juegos', a:[
+      {t:'Debate', d:'Dos posturas, el público vota', p:0},
+      {t:'ORBYT Podcast', d:'Entrevista en vivo', p:0},
+      {t:'Co-diseño en vivo', d:'Equipos mixtos, por turnos', p:1},
+      {t:'Juegos al aire libre', d:'Ingenio y diseño en el patio', p:2},
+      {t:'Merienda', d:'Tercer momento de networking', p:1}
+    ]},
+    {n:'Cierre',   s:'Hasta las 18:30 · conferencia y despedida', a:[
+      {t:'Conferencia magistral', d:'Antes del cierre', p:0},
+      {t:'Presentación del co-diseño', d:'Los equipos muestran resultados', p:1},
+      {t:'ORBYT Awards · 2ª entrega', d:'Premios con humor', p:2},
+      {t:'Despedida', d:'Cuarto momento de networking', p:1}
+    ]}
+  ];
+  const svg = document.getElementById('cronsvg'), NS='http://www.w3.org/2000/svg';
+  const el = (t, a={}, p) => { const e = document.createElementNS(NS, t); for(const k in a) e.setAttribute(k, a[k]); if(p) p.appendChild(e); return e; };
+  const CX=350, CY=380, R=245, RI=190;
+  const pt = (a, r) => [CX + Math.cos(a)*r, CY + Math.sin(a)*r];
+  const arc = (a0, a1, r) => { const [x0,y0]=pt(a0,r), [x1,y1]=pt(a1,r); return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${a1-a0>Math.PI?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`; };
+  el('ellipse', {class:'track', cx:CX, cy:CY, rx:RI, ry:90, transform:`rotate(-23.5 ${CX} ${CY})`}, svg);
+  el('circle', {class:'track', cx:CX, cy:CY, r:R+48}, svg);
+  const segs = [], lbls = [];
+  const gap = 2.6*Math.PI/180, q = Math.PI/2;
+  F.forEach((f,i) => {
+    const a0 = -Math.PI/2 + i*q + gap, a1 = -Math.PI/2 + (i+1)*q - gap;
+    const s = el('path', {d: arc(a0,a1,R), class:'seg'}, svg);
+    s.addEventListener('mouseenter', () => setF(i)); s.addEventListener('click', () => setF(i));
+    segs.push(s);
+    const am = (a0+a1)/2, [lx,ly] = pt(am, R+80);
+    const t = el('text', {x:lx.toFixed(1), y:(ly+7).toFixed(1), 'text-anchor': Math.cos(am)>0.2? 'start' : Math.cos(am)<-0.2? 'end' : 'middle', class:'seglbl'}, svg);
+    t.textContent = f.n; t.addEventListener('mouseenter', () => setF(i)); t.addEventListener('click', () => setF(i));
+    lbls.push(t);
+  });
+  // marcas de inicio y fin (el día como una órbita completa)
+  el('line', {x1:CX, y1:CY-R-34, x2:CX, y2:CY-R+34, stroke:C.verde, 'stroke-width':2}, svg);
+  const h0 = el('text', {x:CX+12, y:CY-R-46, class:'hr'}, svg); h0.textContent = '8:30';
+  const h1 = el('text', {x:CX-12, y:CY-R-46, class:'hr', 'text-anchor':'end'}, svg); h1.textContent = '18:30';
+  const sun = el('circle', {r:7, fill:C.verde}, svg);
+  const bodyG = el('g', {class:'body'}, svg);
+  const cn = el('text', {x:CX, y:CY+6, 'text-anchor':'middle', class:'ctr-n'}, svg);
+  const cs = el('text', {x:CX, y:CY+38, 'text-anchor':'middle', class:'ctr-s'}, svg);
+
+  const tabs = document.querySelector('#s8 .ftabs');
+  const ftabs = F.map((f,i) => { const b = document.createElement('button'); b.className='ft'; b.textContent=f.n; b.onclick=()=>setF(i); b.onmouseenter=()=>setF(i); tabs.appendChild(b); return b; });
+  const fname = document.getElementById('fname'), fsub = document.getElementById('fsub'), flist = document.getElementById('flist');
+  const pls = [...document.querySelectorAll('#s8 .pl')];
+  let cur = -1, hp = -1, dots = [], run = false, rot = 0, lt = 0;
+
+  function setF(i){
+    if(i===cur) return; cur = i;
+    const f = F[i];
+    segs.forEach((s,k)=>s.classList.toggle('on',k===i)); lbls.forEach((s,k)=>s.classList.toggle('on',k===i)); ftabs.forEach((s,k)=>s.classList.toggle('on',k===i));
+    fname.textContent = f.n; fsub.textContent = f.s;
+    flist.innerHTML = f.a.map((a,k)=>`<li data-p="${a.p}" style="--i:${k}"><i style="background:${PIL[a.p].c}"></i><div><b>${a.t}</b><small>${a.d}</small></div><em style="color:${PIL[a.p].c}">${PIL[a.p].n}</em></li>`).join('');
+    cn.textContent = f.n; cs.textContent = `${f.a.length} actividades`;
+    const counts = [0,0,0]; f.a.forEach(a=>counts[a.p]++);
+    const mx = Math.max(...counts);
+    pls.forEach((p,k)=>{ p.querySelector('em').textContent = counts[k]; p.querySelector('.bar span').style.width = (counts[k]/Math.max(mx,1)*100)+'%'; p.classList.toggle('zero', counts[k]===0); });
+    bodyG.innerHTML = '';
+    dots = f.a.map((a,k)=>({e: el('circle', {r:9, fill:PIL[a.p].c}, bodyG), a: k/f.a.length*Math.PI*2, p:a.p}));
+    applyHp();
+  }
+  function applyHp(){
+    flist.querySelectorAll('li').forEach(li => li.classList.toggle('dim', hp>=0 && +li.dataset.p!==hp));
+    dots.forEach(d => d.e.setAttribute('opacity', hp>=0 && d.p!==hp ? .2 : 1));
+  }
+  pls.forEach(p => {
+    p.addEventListener('mouseenter', () => { hp = +p.dataset.p; applyHp(); });
+    p.addEventListener('mouseleave', () => { hp = -1; applyHp(); });
+    p.addEventListener('click', () => { hp = hp===+p.dataset.p ? -1 : +p.dataset.p; applyHp(); });
+  });
+  function frame(now){
+    if(!run) return;
+    const dt = Math.min(64, now-lt)/1000; lt = now;
+    if(!RM) rot += dt*0.22;
+    const T = (now/1000/24) % 1, sa = -Math.PI/2 + T*Math.PI*2, [sx,sy] = pt(sa, R+48);
+    sun.setAttribute('cx', sx.toFixed(1)); sun.setAttribute('cy', sy.toFixed(1));
+    const ct = Math.cos(TILT), st = Math.sin(TILT);
+    dots.forEach(d => { const ex = Math.cos(d.a+rot)*RI, ey = Math.sin(d.a+rot)*90; d.e.setAttribute('cx', (CX + ex*ct - ey*st).toFixed(1)); d.e.setAttribute('cy', (CY + ex*st + ey*ct).toFixed(1)); });
+    requestAnimationFrame(frame);
+  }
+  setF(0);
+  hooks.s8 = { enter(){ run = true; lt = performance.now(); requestAnimationFrame(frame); }, leave(){ run = false; } };
+})();
+
+/* ---- slide 09 · gafete con clave + pines de colores ---- */
+(() => {
+  const b = document.getElementById('badge');
+  let pinned = false;
+  b.addEventListener('mouseenter', () => b.classList.add('open'));
+  b.addEventListener('mouseleave', () => { if(!pinned) b.classList.remove('open'); });
+  b.addEventListener('click', () => { pinned = !pinned; b.classList.toggle('open', pinned); });
+
+  const box = document.getElementById('pinsbox'), NS='http://www.w3.org/2000/svg';
+  const W = 263, H = 200;
+  const svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); box.appendChild(svg);
+  const el = (t, a={}, p=svg) => { const e = document.createElementNS(NS, t); for(const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+  const lg = el('g');
+  const PINS = [
+    {n:'Branding',    f:C.verde,   s:'none'},
+    {n:'Ilustración', f:C.cian,    s:'none'},
+    {n:'Motion',      f:C.platino, s:'none'},
+    {n:'Packaging',   f:C.bruma,   s:C.cian},
+    {n:'Tipografía',  f:C.azul,    s:C.verde}
+  ];
+  const ct = Math.cos(TILT), st = Math.sin(TILT);
+  const pos = PINS.map((_,i) => { const a = -Math.PI/2 + i/PINS.length*Math.PI*2; const ex = Math.cos(a)*98, ey = Math.sin(a)*52; return [W/2 + ex*ct - ey*st, 92 + ex*st + ey*ct]; });
+  el('ellipse', {cx:W/2, cy:92, rx:98, ry:52, fill:'none', stroke:'rgb(227 227 227 / .12)', 'stroke-dasharray':'2 5', transform:`rotate(-23.5 ${W/2} 92)`});
+  const cnt = el('text', {x:W/2, y:97, class:'cnt'});
+  const on = new Set();
+  const nodes = PINS.map((p,i) => {
+    const g = el('g', {class:'pin', transform:`translate(${pos[i][0].toFixed(1)} ${pos[i][1].toFixed(1)})`, tabindex:0, role:'button', 'aria-label':p.n});
+    el('circle', {r:22, fill:'transparent'}, g);
+    el('circle', {class:'halo', r:17}, g);
+    el('circle', {class:'p', r:10, fill:p.f, stroke:p.s, 'stroke-width':2.4}, g);
+    const t = el('text', {y: pos[i][1] < 92 ? -20 : 30}, g); t.textContent = p.n;
+    const tog = () => { on.has(i) ? on.delete(i) : on.add(i); g.classList.toggle('on', on.has(i)); draw(); };
+    g.addEventListener('click', tog);
+    g.addEventListener('keydown', e => { if(e.key==='Enter'){ e.stopPropagation(); tog(); } });
+    return g;
+  });
+  function draw(){
+    lg.innerHTML = '';
+    const ids = [...on].sort((a,b)=>a-b);
+    for(let a=0;a<ids.length;a++) for(let b2=a+1;b2<ids.length;b2++){
+      const [x0,y0] = pos[ids[a]], [x1,y1] = pos[ids[b2]];
+      const mx=(x0+x1)/2, my=(y0+y1)/2;
+      const pth = el('path', {class:'lnk', d:`M${x0.toFixed(1)} ${y0.toFixed(1)} Q${((mx+W/2)/2).toFixed(1)} ${((my+92)/2).toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)}`}, lg);
+      const L = pth.getTotalLength(); pth.style.strokeDashoffset = 0;
+      pth.animate([{opacity:0},{opacity:1}], {duration:450, easing:'cubic-bezier(0.16,1,0.3,1)'});
+    }
+    const n = ids.length*(ids.length-1)/2;
+    cnt.textContent = n ? `+${n} ${n===1?'conexión':'conexiones'}` : '';
+    cnt.style.opacity = n ? 1 : 0;
+  }
+})();
+
+/* ---- PIEZA 7 · flujo económico (slide 10) + pedido interactivo ---- */
+(() => {
+  const svg = document.getElementById('flowsvg'), NS='http://www.w3.org/2000/svg';
+  const el = (t, a={}, p=svg) => { const e = document.createElementNS(NS, t); for(const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+  const SRC = [
+    {id:'propia', n:'01', t:'Recaudación propia', s:'Fondos propios del festival', y:28},
+    {id:'canjes', n:'02', t:'Canjes con sponsors', s:'Acuerdos de visibilidad', y:160},
+    {id:'food',   n:'03', t:'Food trucks', s:'Almuerzo y merienda', y:292}
+  ];
+  const DST = ['Speakers','Impresión','Merch','Música','Comida'].map((t,i)=>({id:t, t, y: 8 + i*78}));
+  const LK = [
+    ['canjes','Speakers','canje'],['canjes','Impresión','canje'],['canjes','Merch','canje'],['canjes','Música','canje'],
+    ['propia','Speakers','propia'],['propia','Impresión','propia'],['propia','Merch','propia'],['propia','Música','propia'],
+    ['food','Comida','food']
+  ];
+  const SW = 270, SH = 92, DX = 570, DW = 210, DH = 56;
+  const lg = el('g');
+  const nodes = {};
+  SRC.forEach(s => {
+    const g = el('g', {class:'src', 'data-id':s.id, transform:`translate(0 ${s.y})`});
+    el('rect', {width:SW, height:SH}, g);
+    const n = el('text', {x:20, y:30, class:'n'}, g); n.textContent = s.n;
+    const t = el('text', {x:20, y:56, class:'t'}, g); t.textContent = s.t;
+    const sb = el('text', {x:20, y:77, class:'s'}, g); sb.textContent = s.s;
+    nodes[s.id] = {g, x: SW, y: s.y + SH/2};
+  });
+  DST.forEach(d => {
+    const g = el('g', {class:'dst', 'data-id':d.id, transform:`translate(${DX} ${d.y})`});
+    el('rect', {width:DW, height:DH}, g);
+    const t = el('text', {x:20, y:35, class:'t'}, g); t.textContent = d.t;
+    nodes[d.id] = {g, x: DX, y: d.y + DH/2};
+  });
+  const links = LK.map(([a,b,k]) => {
+    const A = nodes[a], B = nodes[b], mx = (A.x+B.x)/2;
+    const p = el('path', {class:'lk '+k, d:`M${A.x} ${A.y} C${mx} ${A.y} ${mx} ${B.y} ${B.x} ${B.y}`}, lg);
+    return {a, b, p};
+  });
+  const legend = el('g', {class:'legend', transform:'translate(0 412)'});
+  [['canje',C.cian,'Canje'],['propia',C.platino,'Aporte propio'],['food',C.verde,'Food trucks']].forEach(([k,c,t],i) => {
+    el('line', {x1:i*170, y1:-4, x2:i*170+26, y2:-4, stroke:c, 'stroke-width':2, 'stroke-dasharray': k==='propia'? '2 5' : '5 6', opacity: k==='propia'? .6 : 1}, legend);
+    const tx = el('text', {x:i*170+36, y:0}, legend); tx.textContent = t;
+  });
+  function focus(id){
+    if(!id){ svg.classList.remove('focus'); Object.values(nodes).forEach(n=>n.g.classList.remove('hi')); links.forEach(l=>l.p.classList.remove('hi')); return; }
+    svg.classList.add('focus');
+    const hit = new Set([id]);
+    links.forEach(l => { const on = l.a===id || l.b===id; l.p.classList.toggle('hi', on); if(on){ hit.add(l.a); hit.add(l.b); } });
+    Object.entries(nodes).forEach(([k,n]) => n.g.classList.toggle('hi', hit.has(k)));
+  }
+  Object.entries(nodes).forEach(([k,n]) => { n.g.addEventListener('mouseenter', () => focus(k)); n.g.addEventListener('mouseleave', () => focus(null)); });
+
+  // pedido: marcar / anotar en vivo (se guarda en este navegador)
+  const KEY = 'orbyt-s21-pedido';
+  let state = {};
+  try{ state = JSON.parse(localStorage.getItem(KEY) || '{}'); }catch(e){ state = {}; }
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} };
+  const items = [...document.querySelectorAll('#s10 .ask li')];
+  items.forEach(li => {
+    const k = li.dataset.k, note = li.querySelector('.note'), nb = li.querySelector('.nb');
+    const s = state[k] || {};
+    li.classList.toggle('done', !!s.done);
+    if(s.note){ note.textContent = s.note; li.classList.add('has-note'); }
+    li.addEventListener('click', e => {
+      if(e.target.closest('.note') || e.target.closest('.nb')) return;
+      const st = state[k] = state[k] || {}; st.done = !st.done; li.classList.toggle('done', st.done); save();
+    });
+    nb.addEventListener('click', e => { e.stopPropagation(); li.classList.add('editing'); note.focus({preventScroll:true}); });
+    note.addEventListener('input', () => { const st = state[k] = state[k] || {}; st.note = note.textContent.trim(); li.classList.toggle('has-note', !!st.note); save(); });
+    note.addEventListener('blur', () => li.classList.remove('editing'));
+    note.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); note.blur(); } });
+  });
+  document.getElementById('askreset').onclick = () => {
+    state = {}; save();
+    items.forEach(li => { li.classList.remove('done','has-note','editing'); li.querySelector('.note').textContent = ''; });
+  };
+})();
+
+/* ---- slide 11 · credenciales con evidencia (drawer) ----
+   ✏️ Fotos: poné las imágenes en ./assets/ con estos nombres. Si no existen, se ve un placeholder. */
+(() => {
+  const CREDS = [
+    {k:'S21', t:'Egresados de la Siglo 21', p:'Somos egresados de la Siglo 21 y tenemos un estudio de branding propio.', img:'./assets/s21.jpg'},
+    {k:'FIE', t:'Foro Internacional de Emprendedores', p:'Lideramos la comunicación y la producción del Foro Internacional de Emprendedores (FIE) de Junior Achievement.', img:'./assets/fie.jpg'},
+    {k:'×2',  t:'Dos ediciones de CTRL G', p:'Ya realizamos dos ediciones de CTRL G, nuestro evento de networking para creativos, muy bien recibidas por la comunidad.', img:'./assets/ctrlg.jpg'},
+    {k:'TFG', t:'Nació en esta universidad', p:'ORBYT nació como Trabajo Final de Grado en la Licenciatura en Diseño Gráfico de la Siglo 21, y hoy cuenta con un equipo organizado por áreas para llevarlo a la realidad.', img:'./assets/tfg.jpg'}
+  ];
+  const dr = document.getElementById('drawer'), panel = dr.querySelector('.panel');
+  const dk = panel.querySelector('.dk'), h3 = panel.querySelector('h3'), p = panel.querySelector('p');
+  const photo = panel.querySelector('.photo'), img = photo.querySelector('img');
+  let idx = 0;
+  function show(i){
+    idx = (i + CREDS.length) % CREDS.length;
+    const c = CREDS[idx];
+    dk.textContent = c.k; h3.textContent = c.t; p.textContent = c.p;
+    photo.classList.remove('has');
+    img.onload = () => photo.classList.add('has');
+    img.onerror = () => photo.classList.remove('has');
+    img.alt = c.t; img.src = c.img;
+  }
+  function open(i){ show(i); dr.classList.add('open'); dr.setAttribute('aria-hidden','false'); modal.open = true; setTimeout(()=>panel.querySelector('.x').focus({preventScroll:true}), 50); }
+  function close(){ dr.classList.remove('open'); dr.setAttribute('aria-hidden','true'); modal.open = false; }
+  modal.close = close;
+  document.querySelectorAll('#s11 .creds li').forEach(li => {
+    li.addEventListener('click', () => open(+li.dataset.c));
+    li.addEventListener('keydown', e => { if(e.key==='Enter'){ e.stopPropagation(); open(+li.dataset.c); } });
+  });
+  dr.querySelector('.bd').onclick = close;
+  panel.querySelector('.x').onclick = close;
+  panel.querySelectorAll('.nav button').forEach(b => b.onclick = () => show(idx + +b.dataset.d));
 })();
 
 /* ============ inicio ============ */
