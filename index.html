@@ -351,6 +351,13 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 .iso .ilabel line{stroke:rgb(227 227 227 / .4)}
 .iso .ilabel.on line{stroke:var(--orbyt-verde-claro)}
 .iso .ppl{fill:var(--orbyt-platino)}
+.iso .tw-top{fill:var(--orbyt-platino)}.iso .tw-s{fill:var(--orbyt-platino);opacity:.78}.iso .tw-e{fill:var(--orbyt-platino);opacity:.6}
+.iso .tw-top,.iso .tw-s,.iso .tw-e{stroke:rgb(0 26 37 / .35);stroke-width:.8}
+.iso .tw-hole{fill:var(--orbyt-azul-profundo)}
+.iso .ictx{font-family:var(--font-body);font-size:13px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .7);pointer-events:none}
+.clabel.ctx{pointer-events:none}
+.clabel.ctx span{background:none;border:none;padding:2px 6px;font-family:var(--font-body);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgb(227 227 227 / .7)}
+.clabel.ctx::after{height:14px;background:rgb(227 227 227 / .25)}
 
 /* 08 · cronograma orbital */
 #s8 .h1{font-size:64px;margin-top:34px}
@@ -646,7 +653,7 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
       <div class="spaces a" style="--i:3" role="tablist">
         <button class="sp on" data-s="0"><span class="n">01</span><span class="t">Auditorio</span><span class="c">4 actividades</span></button>
         <button class="sp" data-s="1"><span class="n">02</span><span class="t">Anfiteatro</span><span class="c">2 actividades</span></button>
-        <button class="sp" data-s="2"><span class="n">03</span><span class="t">Aulas</span><span class="c">4 actividades</span></button>
+        <button class="sp" data-s="2"><span class="n">03</span><span class="t">Aulas · Edificio Arcor</span><span class="c">4 actividades</span></button>
         <button class="sp" data-s="3"><span class="n">04</span><span class="t">Patio central</span><span class="c">5 actividades</span></button>
       </div>
       <div id="acts" class="a" style="--i:4">
@@ -658,19 +665,19 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
           <div class="act" style="--i:3"><div><b>ORBYT Awards</b><span>Premios con humor, en dos entregas.</span></div><i>Que el momento cuente</i></div>
         </div>
         <div class="agroup" data-s="1">
-          <p class="lede">Al aire libre, para charlas abiertas y para encontrarse.</p>
+          <p class="lede">El teatro griego al aire libre, para charlas abiertas y para encontrarse.</p>
           <div class="act" style="--i:0"><div><b>Charlas temáticas</b><span>45 minutos sobre procesos reales del oficio.</span></div><i>Con sentido</i></div>
           <div class="act" style="--i:1"><div><b>Networking</b><span>Cuatro momentos con música en vivo o DJ.</span></div><i>En órbita</i></div>
         </div>
         <div class="agroup" data-s="2">
-          <p class="lede">Dos o tres aulas para talleres y rondas con cupo.</p>
+          <p class="lede">Dos o tres aulas del Edificio Arcor para talleres y rondas con cupo.</p>
           <div class="act" style="--i:0"><div><b>Workshops</b><span>Hora y media. Cada uno se va con algo hecho.</span></div><i>Que el momento cuente</i></div>
           <div class="act" style="--i:1"><div><b>Rondas íntimas</b><span>~20 personas con un referente, como un café.</span></div><i>En órbita</i></div>
           <div class="act" style="--i:2"><div><b>Revisión de portfolios</b><span>Estudios y agencias de Córdoba, en vivo.</span></div><i>Con sentido</i></div>
           <div class="act" style="--i:3"><div><b>Co-diseño en vivo</b><span>Equipos mixtos resuelven un problema real.</span></div><i>En órbita</i></div>
         </div>
         <div class="agroup" data-s="3">
-          <p class="lede">El corazón social: se llega, se come, se imprime, se juega.</p>
+          <p class="lede">El parque entre Experimenta, el Comedor y el Anfiteatro: se llega, se come, se imprime, se juega.</p>
           <div class="act" style="--i:0"><div><b>Acreditación</b><span>Gafete, tríptico y pin de color por área.</span></div><i>En órbita</i></div>
           <div class="act" style="--i:1"><div><b>Impresión en vivo</b><span>Estación de serigrafía para llevarse una pieza.</span></div><i>Que el momento cuente</i></div>
           <div class="act" style="--i:2"><div><b>Food trucks y vasos intervenidos</b><span>Almuerzo y merienda, con fibrones en mano.</span></div><i>Que el momento cuente</i></div>
@@ -1160,15 +1167,19 @@ const hooks = {};
   const box = document.getElementById('campus'), lab = box.querySelector('.labels');
   const btns = [...document.querySelectorAll('#s7 .sp')], groups = [...document.querySelectorAll('#s7 .agroup')];
   const CW = 1120, CH = 920;
-  // anclas de etiqueta y foco de cámara por espacio (unidades de la maqueta)
+  // Campus Siglo 21 (De los Latinos 8555): disposición según fotos aéreas de referencia
+  // x: oeste→este · z: norte→sur (unidades de la maqueta)
   const SP = [
-    {name:'Auditorio',     at:[-24,10,-15], focus:[-22,0,-11], ring:11},
-    {name:'Anfiteatro',    at:[27,5,8],     focus:[25,0,8],    ring:10},
-    {name:'Aulas',         at:[4.5,11,-15], focus:[4.5,0,-12], ring:14},
-    {name:'Patio central', at:[0,4,7],      focus:[0,0,8],     ring:14}
+    {name:'Auditorio',              at:[26,13,-11],  focus:[26,0,-11],  ring:12},
+    {name:'Anfiteatro',             at:[-16,5,-25],  focus:[-16,0,-24], ring:11},
+    {name:'Aulas · Edificio Arcor', at:[-25,13,11], focus:[-19,0,7.5], ring:14},
+    {name:'Patio central',          at:[-9,2,-17],   focus:[2,0,-11],   ring:13}
   ];
+  const CTXL = [ {name:'Experimenta', at:[7.5,31,-3], dx:64}, {name:'Comedor', at:[10,8,-28], dx:40}, {name:'EDN', at:[-43,10,-6]} ];
+  const WALK = [ {x0:-34,x1:34,z:-1.5}, {x0:-40,x1:34,z:16} ];
   let cur = 0, auto = true, autoT = null, api = null, run = false, loading = null;
   const labels = SP.map((s,i)=>{ const d=document.createElement('div'); d.className='clabel'; d.innerHTML=`<span>${s.name}</span>`; d.onclick=()=>select(i,true); lab.appendChild(d); return d; });
+  const ctxLabels = CTXL.map(s=>{ const d=document.createElement('div'); d.className='clabel ctx'; d.innerHTML=`<span>${s.name}</span>`; lab.appendChild(d); return d; });
   function select(i, user){
     cur = i;
     btns.forEach((b,k)=>b.classList.toggle('on',k===i));
@@ -1185,57 +1196,43 @@ const hooks = {};
   const LITE = /[?&](lite|offline)\b/.test(location.search);
   const isoG = [], isoL = [];
   let isoPulse = [], isoPeople = [], isoRun = false, isoT = 0;
-  const K = 9.4, c30 = Math.cos(Math.PI/6);
-  const pr = (x,y,z) => [ (x - z)*c30*K, (x + z)*0.5*K - y*K ];
+  // vista desde el sur-sureste (como las fotos aéreas de referencia)
+  const K = 9.4, PH = 18*Math.PI/180, cP = Math.cos(PH), sP = Math.sin(PH);
+  const pr = (x,y,z) => [ (x*cP - z*sP)*K, (x*sP + z*cP)*0.55*K - y*K ];
+  const depth = (x,z) => x*sP + z*cP;
   (function buildIso(){
     const mk = (t,a,p) => { const e=document.createElementNS(NSI,t); for(const k in a) e.setAttribute(k,a[k]); (p||iso).appendChild(e); return e; };
     const pts = arr => arr.map(p=>pr(...p).map(v=>v.toFixed(1)).join(',')).join(' ');
     const poly = (arr, cls, p) => mk('polygon', {points: pts(arr), class: cls}, p);
-    const boxIso = (x0,x1,z0,z1,h,p,ctx) => {
-      poly([[x0,0,z1],[x1,0,z1],[x1,h,z1],[x0,h,z1]], ctx?'ctx-s':'f-s', p);
-      poly([[x1,0,z0],[x1,0,z1],[x1,h,z1],[x1,h,z0]], ctx?'ctx-e':'f-e', p);
-      poly([[x0,h,z0],[x1,h,z0],[x1,h,z1],[x0,h,z1]], ctx?'ctx-top':'f-top', p);
+    const boxIso = (x0,x1,z0,z1,h,p,ctx,y0=0) => {
+      const y1 = y0 + h;
+      poly([[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]], ctx?'ctx-s':'f-s', p);
+      poly([[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0]], ctx?'ctx-e':'f-e', p);
+      poly([[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]], ctx?'ctx-top':'f-top', p);
     };
     const ground = (cx,cz,rx,rz,cls,p,n=48) => poly(Array.from({length:n},(_,i)=>{const a=i/n*Math.PI*2; return [cx+Math.cos(a)*rx,0,cz+Math.sin(a)*rz];}), cls, p);
     const grp = i => { const g = mk('g',{class:'isp','data-s':i}); g.addEventListener('click',()=>select(i,true)); isoG[i]=g; return g; };
 
-    // base, paseo, prado y lago
-    poly([[-49,0,-28],[49,0,-28],[49,0,44],[-49,0,44]], 'base');
-    poly([[-47,0,-7.8],[47,0,-7.8],[47,0,-3.2],[-47,0,-3.2]], 'path');
-    [18,22.5,27].forEach((z,i)=>{ const w=(18-i*1.5)/2; poly([[-w,0,z-1.8],[w,0,z-1.8],[w,0,z+1.8],[-w,0,z+1.8]], 'path'); });
-    ground(0,36,13.6,8,'lake');
+    // ---- Campus Siglo 21 · disposición según fotos aéreas (x: oeste→este · z: norte→sur) ----
+    // base, calle y senderos
+    poly([[-58,0,-40],[42,0,-40],[42,0,26],[-58,0,26]], 'base');
+    poly([[-58,0,19.5],[42,0,19.5],[42,0,23.5],[-58,0,23.5]], 'path');
+    WALK.forEach(w => poly([[w.x0,0,w.z-1],[w.x1,0,w.z-1],[w.x1,0,w.z+1],[w.x0,0,w.z+1]], 'path'));
+    poly([[0,0,-21],[2,0,-21],[2,0,-1],[0,0,-1]], 'path');
+    ground(-46,-33,7,4,'lake');
 
     // pulso de foco (debajo de los volúmenes)
     const pg = mk('g');
     isoPulse = [mk('ellipse',{class:'ipulse'},pg), mk('ellipse',{class:'ipulse p2'},pg)];
 
-    // 04 Patio central (plano)
+    // 04 Patio central: el parque entre Experimenta, el Comedor y el Anfiteatro
     const gD = grp(3);
-    poly([[-12,0,-0.5],[12,0,-0.5],[12,0,15.5],[-12,0,15.5]], 'f-plaza', gD);
-
-    // contexto y edificios del paseo (de atrás hacia adelante)
-    const ctxG = mk('g');
-    boxIso(-45.5,-36.5,-18.5,-9.5,4,ctxG,true);
-    const gA = grp(0); boxIso(-32,-16,-20.5,-9.5,6.5,gA);
-    // bóveda del auditorio (perfil semicircular sobre el volumen)
-    const vp = []; for(let i=0;i<=16;i++){ const a=Math.PI*i/16; vp.push([6.5+Math.sin(a)*3, -15+Math.cos(a)*5.5]); }
-    for(let i=16;i>0;i--){ const [y0,z0]=vp[i], [y1,z1]=vp[i-1]; poly([[-32,y0,z0],[-16,y0,z0],[-16,y1,z1],[-32,y1,z1]], 'f-top', gA); }
-    poly(vp.map(([y,z])=>[-16,y,z]), 'f-e', gA);
-    const gC = grp(2); boxIso(-9,3,-19,-11,7.5,gC); boxIso(6,18,-19,-11,7.5,gC);
-    boxIso(28.5,35.5,-20.5,-13.5,21,mk('g'),true);
-    boxIso(36,44,-17,-10,3,mk('g'),true);
-
-    // árboles, food trucks, mural y serigrafía
-    const pd = mk('g');
-    [[-13.5,1],[-13.5,6],[-13.5,11],[13.5,1],[13.5,6],[-9,17],[9,17],[-15,-1.5],[15,-1.5]].forEach(([x,z])=>{ const [a,b]=pr(x,0,z), [c,d]=pr(x,3,z); mk('polygon',{points:`${(a-8).toFixed(1)},${b.toFixed(1)} ${(a+8).toFixed(1)},${b.toFixed(1)} ${c.toFixed(1)},${d.toFixed(1)}`, class:'tree'}, pd); });
-    [-4,0,4].forEach(x=>{ const g=mk('g',{},pd); [['prop',[[x-1.5,1.8,13.2],[x+1.5,1.8,13.2],[x+1.5,1.8,14.8],[x-1.5,1.8,14.8]]],['prop',[[x-1.5,0,14.8],[x+1.5,0,14.8],[x+1.5,1.8,14.8],[x-1.5,1.8,14.8]]],['prop',[[x+1.5,0,13.2],[x+1.5,0,14.8],[x+1.5,1.8,14.8],[x+1.5,1.8,13.2]]]].forEach(([c,a])=>poly(a,c,g)); });
-    poly([[-11,0,2.2],[-4,0,2.2],[-4,2.8,2.2],[-11,2.8,2.2]], 'prop', pd);
-    poly([[6.4,1,2.4],[8.6,1,2.4],[8.6,1,4.6],[6.4,1,4.6]], 'prop', pd);
+    poly([[-10,0,-20],[16,0,-20],[16,0,-3],[-10,0,-3]], 'f-plaza', gD);
 
     // 02 Anfiteatro: gradas en semicírculo
     const gB = grp(1);
-    const th = Math.PI/2 + 0.35, cT = Math.cos(th), sT = Math.sin(th);
-    const rot = (lx,lz) => [27 + lx*cT + lz*sT, 8 - lx*sT + lz*cT];
+    const th = 0.6, cT = Math.cos(th), sT = Math.sin(th);
+    const rot = (lx,lz) => [-16 + lx*cT + lz*sT, -24 - lx*sT + lz*cT];
     for(let i=5;i>=0;i--){
       const r = 3.4 + i*1.25, R2 = r + 1.25, h = 0.32*(i+1), arr = [];
       for(let k=0;k<=20;k++){ const t=Math.PI*k/20; const [x,z]=rot(Math.cos(t)*R2, -Math.sin(t)*R2); arr.push([x,h,z]); }
@@ -1243,12 +1240,47 @@ const hooks = {};
       poly(arr, i%2? 'f-top' : 'f-s', gB);
     }
     poly([[-2.75,0.45,-0.1],[2.75,0.45,-0.1],[2.75,0.45,2.5],[-2.75,0.45,2.5]].map(([x,y,z])=>{ const [a,b]=rot(x,z); return [a,y,b]; }), 'prop', gB);
+    boxIso(-4,14,-32,-22,6,mk('g'),true); boxIso(14,18,-30,-24,4,mk('g'),true);
+    // contexto: EDN (escalonado) y Comedor
+    const ctxG = mk('g');
+    boxIso(-52,-34,-12,4,2.4,ctxG,true); boxIso(-52,-34,-12,0,2.4,ctxG,true,2.4); boxIso(-52,-34,-12,-4,2.4,ctxG,true,4.8);
+
+    // food trucks, mural y serigrafía (en el patio)
+    const pd = mk('g');
+    [-6,-2,2].forEach(x=>{ const g=mk('g',{},pd); [['prop',[[x-1.5,1.8,-19.2],[x+1.5,1.8,-19.2],[x+1.5,1.8,-17.6],[x-1.5,1.8,-17.6]]],['prop',[[x-1.5,0,-17.6],[x+1.5,0,-17.6],[x+1.5,1.8,-17.6],[x-1.5,1.8,-17.6]]],['prop',[[x+1.5,0,-19.2],[x+1.5,0,-17.6],[x+1.5,1.8,-17.6],[x+1.5,1.8,-19.2]]]].forEach(([c,a])=>poly(a,c,g)); });
+    poly([[8,0,-16],[15,0,-16],[15,2.8,-16],[8,2.8,-16]], 'prop', pd);
+    poly([[-8,1,-11],[-5.8,1,-11],[-5.8,1,-8.8],[-8,1,-8.8]], 'prop', pd);
+
+    // 01 Auditorio (con caja escénica)
+    const gA = grp(0); boxIso(18,34,-18,-4,7,gA); boxIso(22,30,-15,-8,4,gA,false,7);
+    // Experimenta: la torre con aberturas
+    const tw = mk('g');
+    poly([[4,0,0],[11,0,0],[11,28,0],[4,28,0]], 'tw-s', tw);
+    poly([[11,0,-6],[11,0,0],[11,28,0],[11,28,-6]], 'tw-e', tw);
+    poly([[4,28,-6],[11,28,-6],[11,28,0],[4,28,0]], 'tw-top', tw);
+    [[5,24],[8.5,21],[6,17],[9.5,14],[5.2,10],[8,6.5],[6.4,3]].forEach(([x,y],k)=>{ const hx=[]; for(let j=0;j<6;j++){ const a=j/6*Math.PI*2+k; hx.push([x+Math.cos(a)*0.7,y+Math.sin(a)*0.9,0]); } poly(hx,'tw-hole',tw); });
+    [[-1.5,22],[-4.5,18],[-2.5,12],[-4.8,7]].forEach(([z,y],k)=>{ const hx=[]; for(let j=0;j<6;j++){ const a=j/6*Math.PI*2+k; hx.push([11,y+Math.sin(a)*0.9,z+Math.cos(a)*0.6]); } poly(hx,'tw-hole',tw); });
+
+
+    // 03 Aulas · Edificio Arcor (con bóveda)
+    const gC = grp(2); boxIso(-30,-8,2,13,9,gC);
+    const vp = []; for(let i=0;i<=16;i++){ const a=Math.PI*i/16; vp.push([9+Math.sin(a)*2.6, 7.5+Math.cos(a)*5.5]); }
+    for(let i=16;i>0;i--){ const [y0,z0]=vp[i], [y1,z1]=vp[i-1]; poly([[-30,y0,z0],[-8,y0,z0],[-8,y1,z1],[-30,y1,z1]], 'f-top', gC); }
+    poly(vp.map(([y,z])=>[-8,y,z]), 'f-e', gC);
+
+    // árboles
+    const tr = mk('g');
+    const TREES = [];
+    for(let x=-54;x<=40;x+=7) TREES.push([x,18]);
+    [[-40,-30],[-36,-36],[-50,-24],[-28,-34],[-24,14],[-36,12],[-12,-4],[14,-4],[-8,-18],[36,2],[38,-24],[22,6]].forEach(t=>TREES.push(t));
+    TREES.sort((a,b)=>depth(...a)-depth(...b)).forEach(([x,z])=>{ const [a,b]=pr(x,0,z), [c,d]=pr(x,3,z); mk('polygon',{points:`${(a-8).toFixed(1)},${b.toFixed(1)} ${(a+8).toFixed(1)},${b.toFixed(1)} ${c.toFixed(1)},${d.toFixed(1)}`, class:'tree'}, tr); });
 
     // personas (puntos sobre el paseo y alrededor de cada espacio)
     const peopleG = mk('g');
     for(let i=0;i<46;i++){
       const walker = i < 16, s = SP[i%4];
-      isoPeople.push(walker ? {w:true, x:-45+Math.random()*90, z:-5.5+(Math.random()-.5)*3, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3), e: mk('circle',{r:2.2, class:'ppl'},peopleG)}
+      const wk = WALK[i%2];
+      isoPeople.push(walker ? {w:true, x0:wk.x0, x1:wk.x1, x:wk.x0+Math.random()*(wk.x1-wk.x0), z:wk.z+(Math.random()-.5)*1.4, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3), e: mk('circle',{r:2.2, class:'ppl'},peopleG)}
                             : {w:false, c:s.focus, a:Math.random()*Math.PI*2, rx:3+Math.random()*s.ring*.6, rz:2+Math.random()*s.ring*.4, sp:(.2+Math.random()*.3)*(Math.random()<.5?-1:1), e: mk('circle',{r:2.2, class:'ppl', fill: Math.random()<.4? C.verde : C.platino},peopleG)});
     }
 
@@ -1263,9 +1295,13 @@ const hooks = {};
       const t = mk('text',{x:0,y:-41,'text-anchor':'middle'},g); t.textContent = s.name;
       isoL[i] = g;
     });
+    CTXL.forEach(s=>{
+      const [x,y] = pr(...s.at);
+      const t = mk('text',{x:(x+(s.dx||0)).toFixed(1), y:(y-10).toFixed(1), 'text-anchor':'middle', class:'ictx'}); t.textContent = s.name;
+    });
 
     // encuadre
-    const B = [[-49,0,-28],[49,0,-28],[49,0,44],[-49,0,44],[32,24,-17]].map(p=>pr(...p));
+    const B = [[-58,0,-40],[42,0,-40],[42,0,26],[-58,0,26],[7.5,32,-3]].map(p=>pr(...p));
     const xs = B.map(b=>b[0]), ys = B.map(b=>b[1]);
     const x0 = Math.min(...xs)-20, x1 = Math.max(...xs)+20, y0 = Math.min(...ys)-80, y1 = Math.max(...ys)+20;
     iso.setAttribute('viewBox', `${x0.toFixed(0)} ${y0.toFixed(0)} ${(x1-x0).toFixed(0)} ${(y1-y0).toFixed(0)}`);
@@ -1275,7 +1311,7 @@ const hooks = {};
     isoG.forEach((g,k)=>g.classList.toggle('on',k===i));
     isoL.forEach((g,k)=>g.classList.toggle('on',k===i));
     const s = SP[i], [cx,cy] = pr(s.focus[0],0,s.focus[2]);
-    isoPulse.forEach(e=>{ e.setAttribute('cx',cx.toFixed(1)); e.setAttribute('cy',cy.toFixed(1)); e.setAttribute('rx',(s.ring*K*c30*Math.SQRT2).toFixed(1)); e.setAttribute('ry',(s.ring*K*0.5*Math.SQRT2).toFixed(1)); });
+    isoPulse.forEach(e=>{ e.setAttribute('cx',cx.toFixed(1)); e.setAttribute('cy',cy.toFixed(1)); e.setAttribute('rx',(s.ring*K).toFixed(1)); e.setAttribute('ry',(s.ring*K*0.55).toFixed(1)); });
   }
   function isoLoop(now){
     if(!isoRun) return;
@@ -1283,7 +1319,7 @@ const hooks = {};
     if(!box.classList.contains('three-on')){
       isoPeople.forEach(p=>{
         let x, z;
-        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>46) p.x=-46; if(p.x<-46) p.x=46; x=p.x; z=p.z; }
+        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>p.x1) p.x=p.x0; if(p.x<p.x0) p.x=p.x1; x=p.x; z=p.z; }
         else { if(!RM) p.a += p.sp*dt; x=p.c[0]+Math.cos(p.a)*p.rx; z=p.c[2]+Math.sin(p.a)*p.rz; }
         const [a,b] = pr(x,0.6,z); p.e.setAttribute('cx',a.toFixed(1)); p.e.setAttribute('cy',b.toFixed(1));
       });
@@ -1313,28 +1349,27 @@ const hooks = {};
     const add = (m, parent=scene, e=true, op) => { parent.add(m); if(e) parent.add(edges(m, op)); return m; };
     const boxM = (w,h,d,x,y,z,mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); m.position.set(x,y,z); return m; };
 
-    // base de la maqueta
-    add(boxM(98,1.6,72,0,-0.8,8, lam('#052B3B')), scene, true, .18);
-    // paseo peatonal (eje este-oeste)
-    add(boxM(94,0.25,4.6,0,0.13,-5.5, lam('#0B3D50')), scene, false);
-    // prado en terrazas + lago (eje norte-sur)
-    [18,22.5,27].forEach((z,i)=> add(boxM(18-i*1.5,0.18,3.6,0,0.09,z, lam('#0B3D50')), scene, false));
-    const lake = new THREE.Mesh(new THREE.CircleGeometry(8,48), lam(C.bruma)); lake.rotation.x=-Math.PI/2; lake.scale.set(1.7,1,1); lake.position.set(0,0.06,36); scene.add(lake);
+    // ---- Campus Siglo 21 · disposición según fotos aéreas (x: oeste→este · z: norte→sur) ----
+    add(boxM(100,1.6,66,-8,-0.8,-7, lam('#052B3B')), scene, true, .18);
+    add(boxM(100,0.25,4,-8,0.13,21.5, lam('#0B3D50')), scene, false);
+    WALK.forEach(w => add(boxM(w.x1-w.x0,0.2,2,(w.x0+w.x1)/2,0.1,w.z, lam('#0B3D50')), scene, false));
+    add(boxM(2,0.2,20,1,0.1,-11, lam('#0B3D50')), scene, false);
+    const lake = new THREE.Mesh(new THREE.CircleGeometry(4,48), lam(C.bruma)); lake.rotation.x=-Math.PI/2; lake.scale.set(1.75,1,1); lake.position.set(-46,0.06,-33); scene.add(lake);
 
     // materiales por espacio (para resaltar)
     const base = [C.bruma, '#0F5E6E', C.bruma, C.cian];
     const mats = base.map(c => lam(c));
     mats[3].transparent = true; mats[3].opacity = .5;
-    const accent = [ [], [], [], [] ]; // mallas extra a teñir
+    const accent = [ [], [], [], [] ];
+    const ctx = lam('#0A3A4B');
 
-    // 01 Auditorio: volumen con bóveda
+    // 01 Auditorio (con caja escénica)
     const gA = new THREE.Group(); scene.add(gA);
-    add(boxM(16,5,11,-24,2.5,-15, mats[0]), gA);
-    const vault = new THREE.Mesh(new THREE.CylinderGeometry(5.5,5.5,16,28,1,false,0,Math.PI), mats[0]);
-    vault.rotation.set(0,0,Math.PI/2); vault.scale.set(.55,1,1); vault.position.set(-24,5,-15); add(vault, gA);
+    add(boxM(16,7,14,26,3.5,-11, mats[0]), gA);
+    add(boxM(8,4,7,26,9,-11.5, mats[0]), gA);
 
     // 02 Anfiteatro: gradas en semicírculo (teatro griego) + escenario
-    const gB = new THREE.Group(); gB.position.set(27,0,8); gB.rotation.y = Math.PI/2 + 0.35; scene.add(gB);
+    const gB = new THREE.Group(); gB.position.set(-16,0,-24); gB.rotation.y = 0.6; scene.add(gB);
     for(let i=0;i<6;i++){
       const r = 3.4 + i*1.25, R = r + 1.25;
       const sh = new THREE.Shape(); sh.absarc(0,0,R,0,Math.PI,false); sh.lineTo(-r,0); sh.absarc(0,0,r,Math.PI,0,true); sh.lineTo(R,0);
@@ -1343,29 +1378,40 @@ const hooks = {};
     }
     const stage = boxM(5.5,0.45,2.6,0,0.22,1.2, lam(C.platino)); gB.add(stage); accent[1].push(stage);
 
-    // 03 Aulas: dos edificios de aulas sobre el paseo
+    // 03 Aulas · Edificio Arcor (con bóveda)
     const gC = new THREE.Group(); scene.add(gC);
-    add(boxM(12,7.5,8,-3,3.75,-15, mats[2]), gC);
-    add(boxM(12,7.5,8,12,3.75,-15, mats[2]), gC);
-    // líneas de piso
-    for(const x of [-3,12]) for(let f=1;f<3;f++){ const l = boxM(12.05,0.08,8.05,x,f*2.5,-15, new THREE.MeshBasicMaterial({color:C.azul,transparent:true,opacity:.35})); gC.add(l); }
+    add(boxM(22,9,11,-19,4.5,7.5, mats[2]), gC);
+    const vault = new THREE.Mesh(new THREE.CylinderGeometry(5.5,5.5,22,28,1,false,0,Math.PI), mats[2]);
+    vault.rotation.set(0,0,Math.PI/2); vault.scale.set(.47,1,1); vault.position.set(-19,9,7.5); add(vault, gC);
+    for(let f=1;f<3;f++){ gC.add(boxM(22.05,0.08,11.05,-19,f*3,7.5, new THREE.MeshBasicMaterial({color:C.azul,transparent:true,opacity:.35}))); }
 
-    // contexto (sin interacción)
-    const ctx = lam('#0A3A4B');
-    add(boxM(7,21,7,32,10.5,-17, ctx), scene, true, .15);
-    add(boxM(9,4,9,-41,2,-14, ctx), scene, true, .15);
-    add(boxM(8,3,7,40,1.5,-4.5+ -9, ctx), scene, true, .12);
+    // contexto: Experimenta (torre), Comedor, EDN escalonado
+    const towerM = lam(C.platino);
+    add(boxM(7,28,6,7.5,14,-3, towerM), scene, true, .2);
+    const holeM = new THREE.MeshBasicMaterial({color:C.azul});
+    [[5,24],[8.5,21],[6,17],[9.5,14],[5.2,10],[8,6.5],[6.4,3]].forEach(([x,y],k)=>{ const h=new THREE.Mesh(new THREE.CircleGeometry(0.85,6), holeM); h.position.set(x,y,0.02); h.rotation.z=k; scene.add(h); });
+    [[-1.5,22],[-4.5,18],[-2.5,12],[-4.8,7]].forEach(([z,y],k)=>{ const h=new THREE.Mesh(new THREE.CircleGeometry(0.85,6), holeM); h.position.set(11.02,y,z); h.rotation.set(0,Math.PI/2,k); scene.add(h); });
+    add(boxM(18,6,10,5,3,-27, ctx), scene, true, .15);
+    add(boxM(4,4,6,16,2,-27, ctx), scene, true, .12);
+    add(boxM(18,2.4,16,-43,1.2,-4, ctx), scene, true, .15);
+    add(boxM(18,2.4,12,-43,3.6,-6, ctx), scene, true, .15);
+    add(boxM(18,2.4,8,-43,6,-8, ctx), scene, true, .15);
 
-    // 04 Patio central (Plaza Mayor): plaza, árboles, food trucks, mural, serigrafía
+    // 04 Patio central: el parque entre Experimenta, el Comedor y el Anfiteatro
     const gD = new THREE.Group(); scene.add(gD);
-    const plaza = new THREE.Mesh(new THREE.PlaneGeometry(24,16), mats[3]); plaza.rotation.x=-Math.PI/2; plaza.position.set(0,0.05,7.5); gD.add(plaza);
-    const plazaEdge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(24,16)), new THREE.LineBasicMaterial({color:C.cian,transparent:true,opacity:.6})); plazaEdge.rotation.x=-Math.PI/2; plazaEdge.position.set(0,0.07,7.5); gD.add(plazaEdge);
-    const treeM = lam(C.cian);
-    [[-13.5,1],[-13.5,6],[-13.5,11],[13.5,1],[13.5,6],[-9,17],[9,17],[-15,-1.5],[15,-1.5]].forEach(([x,z])=>{ const t=new THREE.Mesh(new THREE.ConeGeometry(1,3,6),treeM); t.position.set(x,1.5,z); gD.add(t); });
+    const plaza = new THREE.Mesh(new THREE.PlaneGeometry(26,17), mats[3]); plaza.rotation.x=-Math.PI/2; plaza.position.set(3,0.05,-11.5); gD.add(plaza);
+    const plazaEdge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(26,17)), new THREE.LineBasicMaterial({color:C.cian,transparent:true,opacity:.6})); plazaEdge.rotation.x=-Math.PI/2; plazaEdge.position.set(3,0.07,-11.5); gD.add(plazaEdge);
     const truckM = lam(C.platino);
-    [-4,0,4].forEach(x=>{ const t=boxM(3,1.8,1.6,x,0.9,14, truckM); add(t,gD,true,.25); accent[3].push(t); });
-    const mural = boxM(7,2.8,0.35,-7.5,1.4,2.2, lam(C.platino)); add(mural,gD,true,.25); accent[3].push(mural);
-    const silk = boxM(2.2,1,2.2,7.5,0.5,3.5, lam(C.platino)); add(silk,gD,true,.25); accent[3].push(silk);
+    [-6,-2,2].forEach(x=>{ const t=boxM(3,1.8,1.6,x,0.9,-18.4, truckM); add(t,gD,true,.25); accent[3].push(t); });
+    const mural = boxM(7,2.8,0.35,11.5,1.4,-16, lam(C.platino)); add(mural,gD,true,.25); accent[3].push(mural);
+    const silk = boxM(2.2,1,2.2,-6.9,0.5,-9.9, lam(C.platino)); add(silk,gD,true,.25); accent[3].push(silk);
+
+    // árboles
+    const treeM = lam(C.cian);
+    const TREES = [];
+    for(let x=-54;x<=40;x+=7) TREES.push([x,18]);
+    [[-40,-30],[-36,-36],[-50,-24],[-28,-34],[-24,14],[-36,12],[-12,-4],[14,-4],[-8,-18],[36,2],[38,-24],[22,6]].forEach(t=>TREES.push(t));
+    TREES.forEach(([x,z])=>{ const t=new THREE.Mesh(new THREE.ConeGeometry(1,3,6),treeM); t.position.set(x,1.5,z); scene.add(t); });
 
     // anillo de foco
     const ring = new THREE.Mesh(new THREE.RingGeometry(1,1.12,64), new THREE.MeshBasicMaterial({color:C.verde,transparent:true,opacity:.9,side:THREE.DoubleSide}));
@@ -1378,7 +1424,8 @@ const hooks = {};
     for(let i=0;i<NP;i++){
       const walker = i < 40;
       const s = SP[i % 4];
-      P.push(walker ? {w:true, x:-45+Math.random()*90, z:-5.5+(Math.random()-.5)*3, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3)}
+      const wk = WALK[i%2];
+      P.push(walker ? {w:true, x0:wk.x0, x1:wk.x1, x:wk.x0+Math.random()*(wk.x1-wk.x0), z:wk.z+(Math.random()-.5)*1.4, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3)}
                     : {w:false, c:s.focus, a:Math.random()*Math.PI*2, rx:3+Math.random()*(s.ring*.7), rz:2+Math.random()*(s.ring*.45), sp:(.15+Math.random()*.35)*(Math.random()<.5?-1:1)});
       const c = Math.random()<.35 ? cV : (Math.random()<.5 ? cP : cC);
       col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
@@ -1388,7 +1435,7 @@ const hooks = {};
     scene.add(people);
 
     // cámara
-    const T = V(0,0,4), Tt = V(0,0,4); let R = 190, Rt = 190, az = -0.55;
+    const T = V(-8,0,-7), Tt = V(-8,0,-7); let R = 200, Rt = 200, az = 0.32;
     const cB = base.map(c=>new THREE.Color(c)), cAcc = new THREE.Color(C.verde), cPlat = new THREE.Color(C.platino);
     function paint(i){
       mats.forEach((m,k)=>{ m.color.copy(k===i ? cAcc : cB[k]); if(k===3){ m.opacity = k===i ? .62 : .45; } });
@@ -1396,8 +1443,8 @@ const hooks = {};
       const f = SP[i].focus; ring.position.x = ring2.position.x = f[0]; ring.position.z = ring2.position.z = f[2];
       ring.userData.r = ring2.userData.r = SP[i].ring;
     }
-    api = { select(i){ paint(i); Tt.set(...SP[i].focus); Tt.z += 4; Rt = 138; } };
-    paint(cur); Tt.set(...SP[cur].focus); Tt.z += 4; Rt = 138;
+    api = { select(i){ paint(i); Tt.set(...SP[i].focus); Tt.z += 4; Rt = 165; } };
+    paint(cur); Tt.set(...SP[cur].focus); Tt.z += 4; Rt = 165;
 
     const tmp = new THREE.Vector3();
     let lt = performance.now();
@@ -1414,13 +1461,14 @@ const hooks = {};
       // personas
       for(let i=0;i<NP;i++){
         const p = P[i];
-        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>46) p.x=-46; if(p.x<-46) p.x=46; pos[i*3]=p.x; pos[i*3+1]=.6; pos[i*3+2]=p.z; }
+        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>p.x1) p.x=p.x0; if(p.x<p.x0) p.x=p.x1; pos[i*3]=p.x; pos[i*3+1]=.6; pos[i*3+2]=p.z; }
         else { if(!RM) p.a += p.sp*dt; pos[i*3]=p.c[0]+Math.cos(p.a)*p.rx; pos[i*3+1]=.6; pos[i*3+2]=p.c[2]+Math.sin(p.a)*p.rz; }
       }
       pg.attributes.position.needsUpdate = true;
       renderer.render(scene, camera);
       // etiquetas
       SP.forEach((s,k)=>{ tmp.set(...s.at).project(camera); labels[k].style.transform = `translate(${((tmp.x+1)/2*CW).toFixed(1)}px,${((1-tmp.y)/2*CH).toFixed(1)}px) translate(-50%,-100%)`; });
+      CTXL.forEach((s,k)=>{ tmp.set(...s.at).project(camera); ctxLabels[k].style.transform = `translate(${((tmp.x+1)/2*CW + (s.dx||0)).toFixed(1)}px,${((1-tmp.y)/2*CH).toFixed(1)}px) translate(-50%,-100%)`; });
       requestAnimationFrame(api.loop);
     };
     api.start = () => { lt = performance.now(); requestAnimationFrame(api.loop); };
