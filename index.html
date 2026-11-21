@@ -215,29 +215,38 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
 #orbsvg .node.on text{fill:var(--orbyt-verde-claro);font-weight:500}
 #orbsvg .core text{font-family:var(--font-display);font-weight:800;fill:var(--orbyt-azul-profundo)}
 
-/* 07 Actividades */
-#s7 .head{display:flex;justify-content:space-between;align-items:flex-end;margin-top:34px}
-#s7 .h1{font-size:64px}
-#s7 .atabs{display:flex;gap:0;margin-top:44px;border-bottom:1px solid var(--brand-border)}
-.atab{flex:1;text-align:left;padding:0 0 22px;position:relative;color:var(--brand-text-muted);transition:color var(--dur-micro)}
-.atab .n{font-family:var(--font-display);font-weight:800;font-size:15px;display:block;margin-bottom:8px}
-.atab .t{font-family:var(--font-display);font-size:28px;font-weight:400;display:block}
-.atab .p{font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-top:8px;display:block}
-.atab::after{content:"";position:absolute;left:0;bottom:-1px;height:3px;width:0;background:var(--brand-accent);transition:width 600ms var(--ease-enter)}
-.atab:hover{color:var(--orbyt-platino)}
-.atab.on{color:var(--orbyt-platino)}
-.atab.on .n{color:var(--brand-accent)}
-.atab.on::after{width:100%}
-#acts{position:relative;height:520px;margin-top:36px}
-.agroup{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:min-content;gap:18px;pointer-events:none}
-.agroup .card{opacity:0;transform:translate(var(--enter-x),var(--enter-y));transition:opacity 260ms var(--ease-exit),transform 260ms var(--ease-exit)}
+/* 07 Espacios y actividades (campus 3D) */
+#s7 .h1{font-size:60px;margin-top:34px;max-width:13ch}
+#s7 .wrap{position:absolute;left:var(--m);top:330px;width:640px;bottom:var(--m);display:flex;flex-direction:column}
+#s7 .spaces{display:flex;flex-direction:column;border-top:1px solid var(--brand-border)}
+.sp{display:grid;grid-template-columns:44px 1fr auto;align-items:baseline;text-align:left;padding:14px 0;border-bottom:1px solid var(--brand-border);color:var(--brand-text-muted);transition:color var(--dur-micro),padding var(--dur-base) var(--ease-enter)}
+.sp .n{font-family:var(--font-display);font-weight:800;font-size:14px}
+.sp .t{font-family:var(--font-display);font-size:26px;line-height:1.1}
+.sp .c{font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.sp:hover{color:var(--orbyt-platino)}
+.sp.on{color:var(--orbyt-platino);padding-left:10px}
+.sp.on .n,.sp.on .c{color:var(--brand-accent)}
+#acts{position:relative;flex:1;margin-top:26px}
+.agroup{position:absolute;inset:0;pointer-events:none}
 .agroup.on{pointer-events:auto}
-.agroup.on .card{opacity:1;transform:none;transition:opacity var(--dur-base) var(--ease-enter) calc(120ms + var(--i)*var(--stagger)),transform 800ms var(--ease-enter) calc(120ms + var(--i)*var(--stagger)),border-color var(--dur-micro)}
-.card{background:var(--brand-surface-subtle);border:1px solid var(--brand-border);padding:26px 28px 28px;min-height:236px}
-.card:hover{border-color:var(--brand-accent)}
-.card .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-accent-2);font-weight:500}
-.card h4{font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1.12;margin:14px 0 12px;letter-spacing:-.01em}
-.card p{font-size:17.5px;line-height:1.45;font-weight:300;color:var(--brand-text-muted)}
+.agroup .lede{font-size:17px;line-height:1.45;font-weight:300;color:var(--brand-text-muted);margin-bottom:16px;opacity:0;transition:opacity 260ms var(--ease-exit)}
+.agroup.on .lede{opacity:1;transition:opacity var(--dur-base) var(--ease-enter) 100ms}
+.act{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:11px 0;border-bottom:1px dashed var(--brand-border);opacity:0;transform:translate(var(--enter-x),var(--enter-y));transition:opacity 220ms var(--ease-exit),transform 220ms var(--ease-exit)}
+.agroup.on .act{opacity:1;transform:none;transition:opacity var(--dur-base) var(--ease-enter) calc(140ms + var(--i)*var(--stagger)),transform 800ms var(--ease-enter) calc(140ms + var(--i)*var(--stagger))}
+.act b{font-family:var(--font-display);font-weight:800;font-size:21px;letter-spacing:-.005em}
+.act span{display:block;font-size:15px;font-weight:300;color:var(--brand-text-muted);margin-top:4px;line-height:1.4}
+.act i{font-style:normal;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-accent-2);white-space:nowrap}
+#campus{position:absolute;right:20px;top:60px;width:1120px;height:920px}
+#campus canvas{display:block;width:100%;height:100%}
+#campus .labels{position:absolute;inset:0;pointer-events:none}
+.clabel{position:absolute;left:0;top:0;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:auto;cursor:pointer;transition:opacity var(--dur-base)}
+.clabel span{font-family:var(--font-display);font-size:15px;padding:7px 13px;border-radius:999px;background:var(--orbyt-azul-profundo);border:1px solid var(--brand-border);color:var(--orbyt-platino);white-space:nowrap;transition:all var(--dur-micro) var(--ease-orbit)}
+.clabel::after{content:"";width:1px;height:26px;background:rgb(227 227 227 / .4)}
+.clabel.on span{background:var(--orbyt-verde-claro);border-color:var(--orbyt-verde-claro);color:var(--orbyt-azul-profundo);font-weight:800}
+.clabel.on::after{background:var(--orbyt-verde-claro)}
+.clabel.dim{opacity:.38}
+#campus .fallback{position:absolute;inset:0;display:none;place-items:center;color:var(--brand-text-muted);font-size:16px}
+#s7 .note{position:absolute;right:var(--m);bottom:var(--m)}
 
 /* 08 Un día en órbita */
 #s8 .h1{font-size:64px;margin-top:34px}
@@ -454,40 +463,49 @@ body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
   </section>
 
-  <!-- 07 · LA EXPERIENCIA -->
-  <section class="slide" id="s7" data-title="La experiencia" data-sub="Actividades por pilar">
+  <!-- 07 · LA EXPERIENCIA: ESPACIOS -->
+  <section class="slide" id="s7" data-title="La experiencia" data-sub="Cada espacio, sus actividades">
     <p class="kicker a" style="--i:0"><b>07</b> La experiencia del día</p>
-    <div class="head">
-      <h2 class="h1 a" style="--i:1">Cada actividad responde a una idea.</h2>
-    </div>
-    <div class="atabs a" style="--i:2" role="tablist">
-      <button class="atab on" data-g="0"><span class="n">01 · Con sentido</span><span class="t">Para pensar la disciplina</span><span class="p">5 formatos</span></button>
-      <button class="atab" data-g="1"><span class="n">02 · En órbita</span><span class="t">Para encontrarse con otros</span><span class="p">4 formatos</span></button>
-      <button class="atab" data-g="2"><span class="n">03 · Que el momento cuente</span><span class="t">Para hacer y disfrutar</span><span class="p">6 formatos</span></button>
-    </div>
-    <div id="acts" class="a" style="--i:3">
-      <div class="agroup on" data-g="0">
-        <article class="card" style="--i:0"><span class="tag">Auditorio · 2</span><h4>Conferencias magistrales</h4><p>Una a la mañana y otra antes del cierre, a cargo de referentes. Sin nada en paralelo: todo el festival se junta.</p></article>
-        <article class="card" style="--i:1"><span class="tag">45 minutos</span><h4>Charlas temáticas</h4><p>Branding, identidad, IA, licencias y autoría. Procesos reales: qué salió mal y qué se aprendió.</p></article>
-        <article class="card" style="--i:2"><span class="tag">Con votación</span><h4>Debate</h4><p>Dos referentes con posturas opuestas discuten una pregunta que divide al rubro. El público pregunta y vota.</p></article>
-        <article class="card" style="--i:3"><span class="tag">En vivo</span><h4>ORBYT Podcast</h4><p>Una entrevista descontracturada en el escenario, con formato de podcast.</p></article>
-        <article class="card" style="--i:4"><span class="tag">Postulación previa</span><h4>Revisión de portfolios</h4><p>Dueños de estudios y agencias de Córdoba revisan trabajos en vivo y dan devoluciones honestas.</p></article>
+    <h2 class="h1 a" style="--i:1">Cada espacio, una experiencia.</h2>
+    <div id="campus" class="a" style="--i:2" aria-hidden="true"><div class="labels"></div><div class="fallback">Maqueta 3D no disponible sin conexión</div></div>
+    <div class="wrap">
+      <div class="spaces a" style="--i:3" role="tablist">
+        <button class="sp on" data-s="0"><span class="n">01</span><span class="t">Auditorio</span><span class="c">4 actividades</span></button>
+        <button class="sp" data-s="1"><span class="n">02</span><span class="t">Anfiteatro</span><span class="c">2 actividades</span></button>
+        <button class="sp" data-s="2"><span class="n">03</span><span class="t">Aulas</span><span class="c">4 actividades</span></button>
+        <button class="sp" data-s="3"><span class="n">04</span><span class="t">Patio central</span><span class="c">5 actividades</span></button>
       </div>
-      <div class="agroup" data-g="1">
-        <article class="card" style="--i:0"><span class="tag">Al llegar</span><h4>Acreditación</h4><p>Gafete, tríptico con grilla y mapa del campus, y un pin de color según el área de interés: la excusa para hablar.</p></article>
-        <article class="card" style="--i:1"><span class="tag">~20 personas</span><h4>Rondas íntimas</h4><p>Con un referente, de igual a igual, como tomando un café. No hay presentación: hay preguntas.</p></article>
-        <article class="card" style="--i:2"><span class="tag">Equipos de ~5</span><h4>Co-diseño en vivo</h4><p>Estudiantes y profesionales resuelven un problema real del rubro, como armar un tarifario. Se presenta en el cierre.</p></article>
-        <article class="card" style="--i:3"><span class="tag">4 momentos</span><h4>Networking</h4><p>Media mañana, almuerzo, merienda y despedida, con música en vivo o DJ. El corazón social del festival.</p></article>
-      </div>
-      <div class="agroup" data-g="2">
-        <article class="card" style="--i:0"><span class="tag">Hora y media</span><h4>Workshops</h4><p>Tipografía, motion, packaging o ilustración. Con cupo, y cada asistente se va con algo hecho.</p></article>
-        <article class="card" style="--i:1"><span class="tag">Muestra</span><h4>Mural “¿Para qué diseñamos?”</h4><p>Pósters de los participantes que crecen durante el día y una pared en blanco para responder.</p></article>
-        <article class="card" style="--i:2"><span class="tag">Patio</span><h4>Impresión en vivo</h4><p>Una estación de serigrafía para imprimir una pieza de ORBYT y llevársela.</p></article>
-        <article class="card" style="--i:3"><span class="tag">Food trucks</span><h4>Vasos intervenidos</h4><p>Vasos blancos y fibrones para diseñar mientras se come. Los mejores van a los Awards.</p></article>
-        <article class="card" style="--i:4"><span class="tag">Por la tarde</span><h4>Juegos al aire libre</h4><p>Juegos de ingenio y diseño en el patio, para romper el hielo entre grupos.</p></article>
-        <article class="card" style="--i:5"><span class="tag">2 entregas</span><h4>ORBYT Awards</h4><p>Premios simbólicos y con humor. Premian la participación, no la competencia.</p></article>
+      <div id="acts" class="a" style="--i:4">
+        <div class="agroup on" data-s="0">
+          <p class="lede">Donde todo el festival se junta. Sin nada en paralelo.</p>
+          <div class="act" style="--i:0"><div><b>Conferencias magistrales</b><span>Una a la mañana y otra antes del cierre.</span></div><i>Con sentido</i></div>
+          <div class="act" style="--i:1"><div><b>Debate</b><span>Dos posturas opuestas. El público pregunta y vota.</span></div><i>Con sentido</i></div>
+          <div class="act" style="--i:2"><div><b>ORBYT Podcast</b><span>Entrevista en vivo, descontracturada.</span></div><i>Con sentido</i></div>
+          <div class="act" style="--i:3"><div><b>ORBYT Awards</b><span>Premios con humor, en dos entregas.</span></div><i>Que el momento cuente</i></div>
+        </div>
+        <div class="agroup" data-s="1">
+          <p class="lede">Al aire libre, para charlas abiertas y para encontrarse.</p>
+          <div class="act" style="--i:0"><div><b>Charlas temáticas</b><span>45 minutos sobre procesos reales del oficio.</span></div><i>Con sentido</i></div>
+          <div class="act" style="--i:1"><div><b>Networking</b><span>Cuatro momentos con música en vivo o DJ.</span></div><i>En órbita</i></div>
+        </div>
+        <div class="agroup" data-s="2">
+          <p class="lede">Dos o tres aulas para talleres y rondas con cupo.</p>
+          <div class="act" style="--i:0"><div><b>Workshops</b><span>Hora y media. Cada uno se va con algo hecho.</span></div><i>Que el momento cuente</i></div>
+          <div class="act" style="--i:1"><div><b>Rondas íntimas</b><span>~20 personas con un referente, como un café.</span></div><i>En órbita</i></div>
+          <div class="act" style="--i:2"><div><b>Revisión de portfolios</b><span>Estudios y agencias de Córdoba, en vivo.</span></div><i>Con sentido</i></div>
+          <div class="act" style="--i:3"><div><b>Co-diseño en vivo</b><span>Equipos mixtos resuelven un problema real.</span></div><i>En órbita</i></div>
+        </div>
+        <div class="agroup" data-s="3">
+          <p class="lede">El corazón social: se llega, se come, se imprime, se juega.</p>
+          <div class="act" style="--i:0"><div><b>Acreditación</b><span>Gafete, tríptico y pin de color por área.</span></div><i>En órbita</i></div>
+          <div class="act" style="--i:1"><div><b>Impresión en vivo</b><span>Estación de serigrafía para llevarse una pieza.</span></div><i>Que el momento cuente</i></div>
+          <div class="act" style="--i:2"><div><b>Food trucks y vasos intervenidos</b><span>Almuerzo y merienda, con fibrones en mano.</span></div><i>Que el momento cuente</i></div>
+          <div class="act" style="--i:3"><div><b>Mural “¿Para qué diseñamos?”</b><span>Muestra de pósters que crece durante el día.</span></div><i>Que el momento cuente</i></div>
+          <div class="act" style="--i:4"><div><b>Juegos al aire libre</b><span>Ingenio y diseño para romper el hielo.</span></div><i>Que el momento cuente</i></div>
+        </div>
       </div>
     </div>
+    <p class="cap note a" style="--i:6">Maqueta esquemática del campus · distribución tentativa <span class="cian">[A CONFIRMAR]</span></p>
     <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
   </section>
 
@@ -702,7 +720,7 @@ const HS = [
   {x:0.25, y:-0.08,s:0.48, r:4,   o:.4},   // 04
   {x:0.78, y:0.15, s:0.85, r:-8,  o:.9},   // 05
   {x:0.42, y:0.05, s:0.86, r:6,   o:.4},   // 06
-  {x:-0.45,y:0.80, s:1.10, r:-4,  o:.35},  // 07
+  {x:-0.80,y:1.15, s:1.10, r:-4,  o:.35},  // 07
   {x:0.00, y:1.05, s:1.15, r:2,   o:.45},  // 08
   {x:-0.30,y:-0.62,s:1.00, r:8,   o:.45},  // 09
   {x:-0.62,y:1.22, s:0.90, r:-6,  o:.5},   // 10
@@ -910,11 +928,174 @@ const hooks = {};
   hooks.s6 = { enter(){ run=true; lt=performance.now(); requestAnimationFrame(frame);}, leave(){ run=false; } };
 })();
 
-/* ---- slide 07 · pestañas de actividades ---- */
-document.querySelectorAll('#s7 .atab').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#s7 .atab').forEach(x=>x.classList.toggle('on',x===b));
-  document.querySelectorAll('#s7 .agroup').forEach(gp=>gp.classList.toggle('on',gp.dataset.g===b.dataset.g));
-});
+/* ---- PIEZA 5 · maqueta 3D del campus con espacios y actividades (slide 07) ---- */
+(() => {
+  const box = document.getElementById('campus'), lab = box.querySelector('.labels');
+  const btns = [...document.querySelectorAll('#s7 .sp')], groups = [...document.querySelectorAll('#s7 .agroup')];
+  const CW = 1120, CH = 920;
+  // anclas de etiqueta y foco de cámara por espacio (unidades de la maqueta)
+  const SP = [
+    {name:'Auditorio',     at:[-24,10,-15], focus:[-22,0,-11], ring:11},
+    {name:'Anfiteatro',    at:[27,5,8],     focus:[25,0,8],    ring:10},
+    {name:'Aulas',         at:[4.5,11,-15], focus:[4.5,0,-12], ring:14},
+    {name:'Patio central', at:[0,4,7],      focus:[0,0,8],     ring:14}
+  ];
+  let cur = 0, auto = true, autoT = null, api = null, run = false, loading = null;
+  const labels = SP.map((s,i)=>{ const d=document.createElement('div'); d.className='clabel'; d.innerHTML=`<span>${s.name}</span>`; d.onclick=()=>select(i,true); lab.appendChild(d); return d; });
+  function select(i, user){
+    cur = i;
+    btns.forEach((b,k)=>b.classList.toggle('on',k===i));
+    groups.forEach((g,k)=>g.classList.toggle('on',k===i));
+    labels.forEach((l,k)=>{ l.classList.toggle('on',k===i); l.classList.toggle('dim',k!==i); });
+    api?.select(i);
+    if(user){ auto=false; clearInterval(autoT); }
+  }
+  btns.forEach(b=>b.onclick=()=>select(+b.dataset.s,true));
+
+  async function init(){
+    const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js');
+    const V = (x,y,z)=>new THREE.Vector3(x,y,z);
+    const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1, 2));
+    renderer.setSize(CW, CH, false);
+    box.prepend(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(26, CW/CH, 1, 1000);
+    scene.add(new THREE.AmbientLight(0xffffff, .62));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.15); sun.position.set(40,70,30); scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xffffff, .25); fill.position.set(-40,30,-30); scene.add(fill);
+
+    const lam = (c,o={}) => new THREE.MeshLambertMaterial({color:c, ...o});
+    const edgeMat = new THREE.LineBasicMaterial({color:C.platino, transparent:true, opacity:.28});
+    const edges = (m, op) => { const e = new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 20), op? new THREE.LineBasicMaterial({color:C.platino,transparent:true,opacity:op}) : edgeMat); e.position.copy(m.position); e.rotation.copy(m.rotation); e.scale.copy(m.scale); return e; };
+    const add = (m, parent=scene, e=true, op) => { parent.add(m); if(e) parent.add(edges(m, op)); return m; };
+    const boxM = (w,h,d,x,y,z,mat) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); m.position.set(x,y,z); return m; };
+
+    // base de la maqueta
+    add(boxM(98,1.6,72,0,-0.8,8, lam('#052B3B')), scene, true, .18);
+    // paseo peatonal (eje este-oeste)
+    add(boxM(94,0.25,4.6,0,0.13,-5.5, lam('#0B3D50')), scene, false);
+    // prado en terrazas + lago (eje norte-sur)
+    [18,22.5,27].forEach((z,i)=> add(boxM(18-i*1.5,0.18,3.6,0,0.09,z, lam('#0B3D50')), scene, false));
+    const lake = new THREE.Mesh(new THREE.CircleGeometry(8,48), lam(C.bruma)); lake.rotation.x=-Math.PI/2; lake.scale.set(1.7,1,1); lake.position.set(0,0.06,36); scene.add(lake);
+
+    // materiales por espacio (para resaltar)
+    const base = [C.bruma, '#0F5E6E', C.bruma, C.cian];
+    const mats = base.map(c => lam(c));
+    mats[3].transparent = true; mats[3].opacity = .5;
+    const accent = [ [], [], [], [] ]; // mallas extra a teñir
+
+    // 01 Auditorio: volumen con bóveda
+    const gA = new THREE.Group(); scene.add(gA);
+    add(boxM(16,5,11,-24,2.5,-15, mats[0]), gA);
+    const vault = new THREE.Mesh(new THREE.CylinderGeometry(5.5,5.5,16,28,1,false,0,Math.PI), mats[0]);
+    vault.rotation.set(0,0,Math.PI/2); vault.scale.set(.55,1,1); vault.position.set(-24,5,-15); add(vault, gA);
+
+    // 02 Anfiteatro: gradas en semicírculo (teatro griego) + escenario
+    const gB = new THREE.Group(); gB.position.set(27,0,8); gB.rotation.y = Math.PI/2 + 0.35; scene.add(gB);
+    for(let i=0;i<6;i++){
+      const r = 3.4 + i*1.25, R = r + 1.25;
+      const sh = new THREE.Shape(); sh.absarc(0,0,R,0,Math.PI,false); sh.lineTo(-r,0); sh.absarc(0,0,r,Math.PI,0,true); sh.lineTo(R,0);
+      const g = new THREE.ExtrudeGeometry(sh,{depth:0.32*(i+1), bevelEnabled:false, curveSegments:28}); g.rotateX(-Math.PI/2);
+      add(new THREE.Mesh(g, mats[1]), gB, true, .22);
+    }
+    const stage = boxM(5.5,0.45,2.6,0,0.22,1.2, lam(C.platino)); gB.add(stage); accent[1].push(stage);
+
+    // 03 Aulas: dos edificios de aulas sobre el paseo
+    const gC = new THREE.Group(); scene.add(gC);
+    add(boxM(12,7.5,8,-3,3.75,-15, mats[2]), gC);
+    add(boxM(12,7.5,8,12,3.75,-15, mats[2]), gC);
+    // líneas de piso
+    for(const x of [-3,12]) for(let f=1;f<3;f++){ const l = boxM(12.05,0.08,8.05,x,f*2.5,-15, new THREE.MeshBasicMaterial({color:C.azul,transparent:true,opacity:.35})); gC.add(l); }
+
+    // contexto (sin interacción)
+    const ctx = lam('#0A3A4B');
+    add(boxM(7,21,7,32,10.5,-17, ctx), scene, true, .15);
+    add(boxM(9,4,9,-41,2,-14, ctx), scene, true, .15);
+    add(boxM(8,3,7,40,1.5,-4.5+ -9, ctx), scene, true, .12);
+
+    // 04 Patio central (Plaza Mayor): plaza, árboles, food trucks, mural, serigrafía
+    const gD = new THREE.Group(); scene.add(gD);
+    const plaza = new THREE.Mesh(new THREE.PlaneGeometry(24,16), mats[3]); plaza.rotation.x=-Math.PI/2; plaza.position.set(0,0.05,7.5); gD.add(plaza);
+    const plazaEdge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(24,16)), new THREE.LineBasicMaterial({color:C.cian,transparent:true,opacity:.6})); plazaEdge.rotation.x=-Math.PI/2; plazaEdge.position.set(0,0.07,7.5); gD.add(plazaEdge);
+    const treeM = lam(C.cian);
+    [[-13.5,1],[-13.5,6],[-13.5,11],[13.5,1],[13.5,6],[-9,17],[9,17],[-15,-1.5],[15,-1.5]].forEach(([x,z])=>{ const t=new THREE.Mesh(new THREE.ConeGeometry(1,3,6),treeM); t.position.set(x,1.5,z); gD.add(t); });
+    const truckM = lam(C.platino);
+    [-4,0,4].forEach(x=>{ const t=boxM(3,1.8,1.6,x,0.9,14, truckM); add(t,gD,true,.25); accent[3].push(t); });
+    const mural = boxM(7,2.8,0.35,-7.5,1.4,2.2, lam(C.platino)); add(mural,gD,true,.25); accent[3].push(mural);
+    const silk = boxM(2.2,1,2.2,7.5,0.5,3.5, lam(C.platino)); add(silk,gD,true,.25); accent[3].push(silk);
+
+    // anillo de foco
+    const ring = new THREE.Mesh(new THREE.RingGeometry(1,1.12,64), new THREE.MeshBasicMaterial({color:C.verde,transparent:true,opacity:.9,side:THREE.DoubleSide}));
+    ring.rotation.x = -Math.PI/2; ring.position.y = 0.12; scene.add(ring);
+    const ring2 = ring.clone(); ring2.material = ring.material.clone(); scene.add(ring2);
+
+    // personas: cuerpos en órbita alrededor de cada espacio + flujo por el paseo
+    const NP = 150, pos = new Float32Array(NP*3), col = new Float32Array(NP*3), P = [];
+    const cV = new THREE.Color(C.verde), cP = new THREE.Color(C.platino), cC = new THREE.Color(C.cian);
+    for(let i=0;i<NP;i++){
+      const walker = i < 40;
+      const s = SP[i % 4];
+      P.push(walker ? {w:true, x:-45+Math.random()*90, z:-5.5+(Math.random()-.5)*3, sp:(Math.random()<.5?-1:1)*(2+Math.random()*3)}
+                    : {w:false, c:s.focus, a:Math.random()*Math.PI*2, rx:3+Math.random()*(s.ring*.7), rz:2+Math.random()*(s.ring*.45), sp:(.15+Math.random()*.35)*(Math.random()<.5?-1:1)});
+      const c = Math.random()<.35 ? cV : (Math.random()<.5 ? cP : cC);
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+    }
+    const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pos,3)); pg.setAttribute('color', new THREE.BufferAttribute(col,3));
+    const people = new THREE.Points(pg, new THREE.PointsMaterial({size:.75, vertexColors:true, sizeAttenuation:true, transparent:true, opacity:.95}));
+    scene.add(people);
+
+    // cámara
+    const T = V(0,0,4), Tt = V(0,0,4); let R = 190, Rt = 190, az = -0.55;
+    const cB = base.map(c=>new THREE.Color(c)), cAcc = new THREE.Color(C.verde), cPlat = new THREE.Color(C.platino);
+    function paint(i){
+      mats.forEach((m,k)=>{ m.color.copy(k===i ? cAcc : cB[k]); if(k===3){ m.opacity = k===i ? .62 : .45; } });
+      accent.forEach((arr,k)=>arr.forEach(m=>m.material.color.copy(k===i && k!==3 ? cAcc : cPlat)));
+      const f = SP[i].focus; ring.position.x = ring2.position.x = f[0]; ring.position.z = ring2.position.z = f[2];
+      ring.userData.r = ring2.userData.r = SP[i].ring;
+    }
+    api = { select(i){ paint(i); Tt.set(...SP[i].focus); Tt.z += 4; Rt = 138; } };
+    paint(cur); Tt.set(...SP[cur].focus); Tt.z += 4; Rt = 138;
+
+    const tmp = new THREE.Vector3();
+    let lt = performance.now();
+    api.loop = function loop(now){
+      if(!run) return;
+      const dt = Math.min(64, now-lt)/1000; lt = now;
+      if(!RM) az += dt*0.045;
+      T.lerp(Tt, Math.min(1, dt*2.2)); R += (Rt-R)*Math.min(1, dt*2.2);
+      camera.position.set(T.x + Math.sin(az)*R*.74, R*.62, T.z + Math.cos(az)*R*.74);
+      camera.lookAt(T);
+      // anillos pulsantes
+      const pr = (now/1000 % 2.4)/2.4, rr = ring.userData.r || 10;
+      ring.scale.setScalar(rr); ring2.scale.setScalar(rr*(1+pr*.35)); ring2.material.opacity = .7*(1-pr);
+      // personas
+      for(let i=0;i<NP;i++){
+        const p = P[i];
+        if(p.w){ if(!RM) p.x += p.sp*dt; if(p.x>46) p.x=-46; if(p.x<-46) p.x=46; pos[i*3]=p.x; pos[i*3+1]=.6; pos[i*3+2]=p.z; }
+        else { if(!RM) p.a += p.sp*dt; pos[i*3]=p.c[0]+Math.cos(p.a)*p.rx; pos[i*3+1]=.6; pos[i*3+2]=p.c[2]+Math.sin(p.a)*p.rz; }
+      }
+      pg.attributes.position.needsUpdate = true;
+      renderer.render(scene, camera);
+      // etiquetas
+      SP.forEach((s,k)=>{ tmp.set(...s.at).project(camera); labels[k].style.transform = `translate(${((tmp.x+1)/2*CW).toFixed(1)}px,${((1-tmp.y)/2*CH).toFixed(1)}px) translate(-50%,-100%)`; });
+      requestAnimationFrame(api.loop);
+    };
+    api.start = () => { lt = performance.now(); requestAnimationFrame(api.loop); };
+  }
+
+  hooks.s7 = {
+    enter(){
+      select(cur);
+      run = true;
+      (loading ||= init()).then(()=>{ if(run) api.start(); }).catch(()=>{ box.querySelector('.fallback').style.display='grid'; labels.forEach(l=>l.style.display='none'); });
+      clearInterval(autoT);
+      if(auto) autoT = setInterval(()=>select((cur+1)%SP.length), 6500);
+    },
+    leave(){ run = false; clearInterval(autoT); }
+  };
+})();
+
 
 /* ---- PIEZA 4 · el día como trayectoria (slide 08) ---- */
 (() => {
