@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORBYT · Propuesta de Alianza Institucional · Universidad Siglo 21</title>
+
+<!-- ================================================================
+     TIPOGRAFÍAS
+     · Títulos: Neue Machina Inktrap (./fonts/). Si no está, cae a Unbounded (Google Fonts).
+     · Cuerpo: Geologica (Google Fonts).
+     ================================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;800&family=Geologica:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+@font-face { font-family:"Neue Machina Inktrap"; src:url("./fonts/PPNeueMachina-InktrapUltrabold.otf") format("opentype"); font-weight:800; font-style:normal; font-display:swap; }
+@font-face { font-family:"Neue Machina Inktrap"; src:url("./fonts/PPNeueMachina-InktrapRegular.otf") format("opentype"); font-weight:375 400; font-style:normal; font-display:swap; }
+@font-face { font-family:"Neue Machina Inktrap"; src:url("./fonts/PPNeueMachina-InktrapLight.otf") format("opentype"); font-weight:300; font-style:normal; font-display:swap; }
+
+/* ================= TOKENS · /orbyt-brand ================= */
+:root{
+  --orbyt-azul-profundo:#001A25;
+  --orbyt-platino:#E3E3E3;
+  --orbyt-verde-claro:#A2C617;
+  --orbyt-cian-fuerte:#4AB9AD;
+  --orbyt-bruma-oceanica:#065F78;
+  --orbyt-white:#FFFFFF;
+
+  --brand-bg:var(--orbyt-azul-profundo);
+  --brand-surface:var(--orbyt-bruma-oceanica);
+  --brand-surface-subtle:#06283A;
+  --brand-text:var(--orbyt-platino);
+  --brand-text-muted:rgb(227 227 227 / .65);
+  --brand-accent:var(--orbyt-verde-claro);
+  --brand-accent-2:var(--orbyt-cian-fuerte);
+  --brand-border:rgb(227 227 227 / .14);
+
+  --font-display:"Neue Machina Inktrap","Unbounded",system-ui,sans-serif;
+  --font-body:"Geologica",system-ui,sans-serif;
+
+  --ease-orbit:cubic-bezier(0.65,0,0.35,1);
+  --ease-enter:cubic-bezier(0.16,1,0.3,1);
+  --ease-exit:cubic-bezier(0.7,0,0.84,0);
+  --dur-micro:180ms;
+  --dur-base:480ms;
+  --dur-slide:900ms;
+  --dur-orbit:24s;
+  --stagger:70ms;
+
+  /* entrada en diagonal 23,5° */
+  --enter-x:-34px;
+  --enter-y:15px;
+
+  --m:100px; /* margen de retícula */
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100dvh;overflow:hidden;background:var(--brand-bg);color:var(--brand-text);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* ---------- capas globales ---------- */
+#bg{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+#lightbg{position:fixed;inset:0;background:var(--orbyt-platino);opacity:0;transition:opacity var(--dur-slide) var(--ease-orbit);z-index:1;pointer-events:none}
+body.is-light #lightbg{opacity:1}
+.grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:2;pointer-events:none;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
+
+/* ---------- escenario 16:9 escalado ---------- */
+#viewport{position:fixed;inset:0;z-index:3;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center}
+
+section.slide{position:absolute;inset:0;padding:var(--m);visibility:hidden;opacity:0;pointer-events:none;
+  transition:opacity 420ms var(--ease-exit),visibility 0s linear 420ms}
+section.slide.active{visibility:visible;opacity:1;pointer-events:auto;transition:opacity 500ms var(--ease-enter) 220ms,visibility 0s}
+section.slide.light{color:var(--orbyt-azul-profundo)}
+
+/* entradas coreografiadas */
+.a{opacity:0;transform:translate(var(--enter-x),var(--enter-y));transition:opacity var(--dur-base) var(--ease-enter),transform calc(var(--dur-base)*1.6) var(--ease-enter);transition-delay:0ms}
+.slide.active .a{opacity:1;transform:none;transition-delay:calc(320ms + var(--i,0) * var(--stagger))}
+
+/* ---------- tipografía ---------- */
+.kicker{font-family:var(--font-body);font-weight:500;font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-text-muted);display:flex;gap:18px;align-items:center}
+.kicker b{font-weight:500;color:var(--brand-accent)}
+.light .kicker{color:rgb(0 26 37 / .7)}
+.light .kicker b{color:var(--orbyt-bruma-oceanica)}
+.display{font-family:var(--font-display);font-weight:800;line-height:.98;letter-spacing:-.02em}
+.h1{font-family:var(--font-display);font-weight:800;font-size:76px;line-height:1.02;letter-spacing:-.02em}
+.h2{font-family:var(--font-display);font-weight:400;font-size:40px;line-height:1.12;letter-spacing:-.01em}
+.h3{font-family:var(--font-display);font-weight:400;font-size:24px;line-height:1.2}
+.lead{font-size:28px;line-height:1.4;font-weight:300;color:var(--brand-text-muted);max-width:30ch}
+.body{font-size:20px;line-height:1.5;font-weight:300}
+.cap{font-size:14px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;color:var(--brand-text-muted)}
+.verde{color:var(--brand-accent)}
+.cian{color:var(--brand-accent-2)}
+.muted{color:var(--brand-text-muted)}
+
+/* ---------- logo ---------- */
+.logo{display:block;color:var(--orbyt-platino)}
+.logo svg{display:block;width:100%;height:auto}
+.logo-corner{position:absolute;top:var(--m);right:var(--m);width:168px} /* posición 2 */
+.light .logo-corner{color:var(--orbyt-azul-profundo)}
+
+/* ---------- UI de navegación ---------- */
+#ui{position:fixed;right:28px;bottom:24px;z-index:10;display:flex;align-items:center;gap:6px;font-family:var(--font-body);font-size:14px;color:var(--brand-text-muted);transition:color var(--dur-slide) var(--ease-orbit)}
+body.is-light #ui{color:rgb(0 26 37 / .7)}
+#ui .btn{width:38px;height:38px;border-radius:999px;border:1px solid currentColor;display:grid;place-items:center;opacity:.55;transition:opacity var(--dur-micro),color var(--dur-micro),border-color var(--dur-micro),transform var(--dur-micro)}
+#ui .btn:hover{opacity:1;color:var(--brand-accent);transform:translateY(-2px)}
+body.is-light #ui .btn:hover{color:var(--orbyt-bruma-oceanica)}
+#count{min-width:86px;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+#count b{font-weight:500;color:var(--brand-text)}
+body.is-light #count b{color:var(--orbyt-azul-profundo)}
+#ui .g{margin-left:8px;padding:0 14px;height:38px;border-radius:999px;border:1px solid currentColor;opacity:.55;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:opacity var(--dur-micro)}
+#ui .g:hover{opacity:1}
+#progress{position:fixed;left:0;bottom:0;height:3px;background:var(--brand-accent);z-index:10;transition:width var(--dur-slide) var(--ease-orbit)}
+body.is-light #progress{background:var(--orbyt-bruma-oceanica)}
+
+/* ---------- vista general (G) ---------- */
+#overview{position:fixed;inset:0;z-index:20;background:rgb(0 26 37 / .94);display:flex;flex-direction:column;padding:56px 64px;gap:28px;opacity:0;visibility:hidden;transition:opacity 360ms var(--ease-orbit),visibility 0s linear 360ms;backdrop-filter:blur(6px)}
+#overview.open{opacity:1;visibility:visible;transition:opacity 360ms var(--ease-orbit),visibility 0s}
+#overview header{display:flex;justify-content:space-between;align-items:baseline;color:var(--orbyt-platino)}
+#overview header span{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-text-muted)}
+#ovgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;flex:1;min-height:0}
+.ov{position:relative;text-align:left;border:1px solid var(--brand-border);background:var(--brand-surface-subtle);padding:20px 22px;display:flex;flex-direction:column;justify-content:space-between;color:var(--orbyt-platino);transition:border-color var(--dur-micro),transform var(--dur-micro) var(--ease-enter);transform:translateY(10px);opacity:0}
+#overview.open .ov{transform:none;opacity:1;transition:border-color var(--dur-micro),transform 600ms var(--ease-enter) calc(var(--i)*30ms),opacity 400ms var(--ease-enter) calc(var(--i)*30ms)}
+.ov:hover,.ov.cur{border-color:var(--brand-accent)}
+.ov .n{font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--brand-accent)}
+.ov .t{font-family:var(--font-display);font-size:19px;line-height:1.2}
+.ov .s{font-size:13px;color:var(--brand-text-muted);margin-top:6px}
+
+/* ================= SLIDES ================= */
+
+/* 01 Portada */
+#s1{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#s1 .logo{width:760px}
+#s1 .lema{margin-top:64px;font-family:var(--font-display);font-weight:300;font-size:46px;letter-spacing:-.01em}
+#s1 .lema b{font-weight:800;color:var(--brand-accent)}
+#s1 .bajada{position:absolute;left:0;right:0;bottom:var(--m);display:flex;justify-content:center;gap:22px;align-items:center;font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-text-muted)}
+#s1 .bajada i{width:6px;height:6px;border-radius:50%;background:var(--brand-accent);display:inline-block}
+
+/* 02 Problema */
+#s2 .cols{display:grid;grid-template-columns:900px 1fr;gap:60px;height:100%}
+#s2 .left{display:flex;flex-direction:column;justify-content:space-between}
+#s2 .h1{font-size:72px;margin-top:40px}
+#s2 .facts{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--brand-border)}
+#s2 .fact{padding:26px 28px 6px 0;border-bottom:1px solid var(--brand-border)}
+#s2 .fact:nth-child(odd){border-right:1px solid var(--brand-border)}
+#s2 .fact:nth-child(even){padding-left:28px}
+#s2 .fact .big{font-family:var(--font-display);font-weight:800;font-size:54px;color:var(--brand-accent);line-height:1}
+#s2 .fact .big.c{color:var(--brand-accent-2)}
+#s2 .fact p{font-size:19px;line-height:1.45;font-weight:300;margin:12px 0 18px;max-width:34ch}
+#mapsvg{width:100%;height:100%;overflow:visible}
+#mapsvg .lbl{font-family:var(--font-body);font-size:18px;fill:var(--orbyt-platino)}
+#mapsvg .lbl-s{font-family:var(--font-body);font-size:13px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
+#mapsvg .route{fill:none;stroke:var(--orbyt-cian-fuerte);stroke-width:1.5;stroke-dasharray:4 10}
+.slide.active #mapsvg .route{animation:dash 2.4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-56}}
+#mapsvg .ring{fill:none;stroke:var(--orbyt-verde-claro);transform-box:fill-box;transform-origin:center}
+.slide.active #mapsvg .ring{animation:pulse 2.8s var(--ease-orbit) infinite}
+#mapsvg .ring.r2{animation-delay:1.4s!important}
+@keyframes pulse{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+
+/* 03 Manifiesto */
+#s3{display:flex;flex-direction:column;justify-content:center}
+#s3 .pre{font-family:var(--font-display);font-weight:300;font-size:34px;line-height:1.3;color:var(--brand-text-muted);max-width:40ch;margin:46px 0 56px}
+#s3 .big{font-size:104px}
+#s3 .big span{display:block}
+#s3 .post{margin-top:64px;display:flex;align-items:center;gap:26px;font-family:var(--font-display);font-size:30px}
+#s3 .post::before{content:"";width:120px;height:1px;background:var(--brand-accent)}
+#s3 .src{position:absolute;bottom:var(--m);left:var(--m)}
+
+/* 04 Concepto */
+#s4 .top{display:grid;grid-template-columns:1fr 760px;gap:40px;height:610px}
+#s4 .h1{font-size:96px;margin:34px 0 28px}
+#s4 #sys{width:760px;height:610px;display:block;margin-top:30px}
+#s4 .stamp{display:inline-flex;gap:16px;align-items:center;margin-top:36px;padding:14px 24px;border:1px solid var(--brand-accent);border-radius:999px;font-size:17px}
+#s4 .stamp b{font-family:var(--font-display);font-weight:800;color:var(--brand-accent);font-size:18px}
+#s4 .pillars{position:absolute;left:var(--m);right:var(--m);bottom:var(--m);display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pillar{border-top:1px solid var(--brand-border);padding-top:22px;cursor:default;transition:border-color var(--dur-micro)}
+.pillar .n{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--brand-accent)}
+.pillar h3{font-family:var(--font-display);font-weight:800;font-size:34px;margin:10px 0 12px;letter-spacing:-.01em}
+.pillar p{font-size:18px;line-height:1.45;font-weight:300;color:var(--brand-text-muted);max-width:36ch}
+.pillar:hover,.pillar.on{border-color:var(--brand-accent)}
+
+/* 05 Propuesta */
+#s5{display:flex;flex-direction:column;justify-content:center}
+#s5 .display{font-size:92px;max-width:15ch;margin-top:40px}
+#s5 .row{display:flex;gap:80px;margin-top:70px;align-items:flex-start}
+#s5 .item{max-width:420px}
+#s5 .item .cap{display:block;margin-bottom:12px}
+#s5 .item p{font-family:var(--font-display);font-size:26px;line-height:1.25}
+
+/* 06 Qué gana cada parte */
+#s6 .grid{display:grid;grid-template-columns:780px 1fr;gap:40px;height:100%}
+#s6 .h1{font-size:64px;margin:34px 0 36px}
+#s6 .tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:38px}
+.tab{padding:12px 20px;border-radius:999px;border:1px solid var(--brand-border);font-size:16px;color:var(--brand-text-muted);transition:all var(--dur-micro) var(--ease-orbit)}
+.tab:hover{color:var(--orbyt-platino);border-color:var(--orbyt-platino);transform:translateY(-2px)}
+.tab.on{background:var(--brand-accent);border-color:var(--brand-accent);color:var(--orbyt-azul-profundo);font-weight:500}
+#gain{position:relative;min-height:380px}
+.gpanel{position:absolute;inset:0;opacity:0;transform:translate(var(--enter-x),var(--enter-y));transition:opacity 300ms var(--ease-exit),transform 300ms var(--ease-exit);pointer-events:none}
+.gpanel.on{opacity:1;transform:none;transition:opacity var(--dur-base) var(--ease-enter) 120ms,transform 700ms var(--ease-enter) 120ms;pointer-events:auto}
+.gpanel .who{font-family:var(--font-display);font-weight:800;font-size:40px;color:var(--brand-accent);margin-bottom:28px}
+.gpanel dl{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--brand-border)}
+.gpanel dt{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-text-muted);padding-top:22px}
+.gpanel dd{font-family:var(--font-display);font-size:25px;line-height:1.32;padding:10px 0 22px;border-bottom:1px solid var(--brand-border)}
+#orbsvg{width:100%;height:880px;overflow:visible}
+#orbsvg .node{cursor:pointer}
+#orbsvg .node circle.b{fill:var(--orbyt-azul-profundo);stroke:var(--orbyt-cian-fuerte);stroke-width:2;transition:fill var(--dur-micro),stroke var(--dur-micro),r var(--dur-base) var(--ease-enter)}
+#orbsvg .node.on circle.b{fill:var(--orbyt-verde-claro);stroke:var(--orbyt-verde-claro)}
+#orbsvg .node text{font-family:var(--font-body);font-size:19px;fill:var(--orbyt-platino);transition:fill var(--dur-micro)}
+#orbsvg .node.on text{fill:var(--orbyt-verde-claro);font-weight:500}
+#orbsvg .core text{font-family:var(--font-display);font-weight:800;fill:var(--orbyt-azul-profundo)}
+
+/* 07 Actividades */
+#s7 .head{display:flex;justify-content:space-between;align-items:flex-end;margin-top:34px}
+#s7 .h1{font-size:64px}
+#s7 .atabs{display:flex;gap:0;margin-top:44px;border-bottom:1px solid var(--brand-border)}
+.atab{flex:1;text-align:left;padding:0 0 22px;position:relative;color:var(--brand-text-muted);transition:color var(--dur-micro)}
+.atab .n{font-family:var(--font-display);font-weight:800;font-size:15px;display:block;margin-bottom:8px}
+.atab .t{font-family:var(--font-display);font-size:28px;font-weight:400;display:block}
+.atab .p{font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-top:8px;display:block}
+.atab::after{content:"";position:absolute;left:0;bottom:-1px;height:3px;width:0;background:var(--brand-accent);transition:width 600ms var(--ease-enter)}
+.atab:hover{color:var(--orbyt-platino)}
+.atab.on{color:var(--orbyt-platino)}
+.atab.on .n{color:var(--brand-accent)}
+.atab.on::after{width:100%}
+#acts{position:relative;height:520px;margin-top:36px}
+.agroup{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:min-content;gap:18px;pointer-events:none}
+.agroup .card{opacity:0;transform:translate(var(--enter-x),var(--enter-y));transition:opacity 260ms var(--ease-exit),transform 260ms var(--ease-exit)}
+.agroup.on{pointer-events:auto}
+.agroup.on .card{opacity:1;transform:none;transition:opacity var(--dur-base) var(--ease-enter) calc(120ms + var(--i)*var(--stagger)),transform 800ms var(--ease-enter) calc(120ms + var(--i)*var(--stagger)),border-color var(--dur-micro)}
+.card{background:var(--brand-surface-subtle);border:1px solid var(--brand-border);padding:26px 28px 28px;min-height:236px}
+.card:hover{border-color:var(--brand-accent)}
+.card .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-accent-2);font-weight:500}
+.card h4{font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1.12;margin:14px 0 12px;letter-spacing:-.01em}
+.card p{font-size:17.5px;line-height:1.45;font-weight:300;color:var(--brand-text-muted)}
+
+/* 08 Un día en órbita */
+#s8 .h1{font-size:64px;margin-top:34px}
+#s8 .lead{margin-top:18px;max-width:48ch;font-size:24px}
+#daysvg{position:absolute;left:0;top:300px;width:1920px;height:700px;overflow:visible}
+#daysvg .arc{fill:none;stroke:rgb(227 227 227 / .22);stroke-width:1.5}
+#daysvg .arc-on{fill:none;stroke:var(--orbyt-verde-claro);stroke-width:3;stroke-linecap:round}
+#daysvg .pt circle{fill:var(--orbyt-azul-profundo);stroke:var(--orbyt-cian-fuerte);stroke-width:2}
+#daysvg .pt.k circle{fill:var(--orbyt-verde-claro);stroke:var(--orbyt-verde-claro)}
+#daysvg .pt text{font-family:var(--font-body);fill:var(--orbyt-platino);font-size:20px}
+#daysvg .pt text.s{font-size:13px;letter-spacing:.12em;text-transform:uppercase;fill:rgb(227 227 227 / .6)}
+#daysvg .hr{font-family:var(--font-display);font-weight:800;font-size:64px;fill:var(--orbyt-verde-claro)}
+#daysvg .pt{opacity:0;transition:opacity 500ms var(--ease-enter)}
+#daysvg .pt.show{opacity:1}
+#s8 .note{position:absolute;left:var(--m);bottom:var(--m)}
+
+/* 09 Qué se lleva cada asistente */
+#s9 .h1{font-size:64px;margin-top:34px;max-width:18ch}
+#s9 .take{position:absolute;left:var(--m);right:var(--m);bottom:var(--m);display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr 1fr;gap:16px}
+#s9 .tk{background:var(--brand-surface-subtle);border:1px solid var(--brand-border);padding:28px 26px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:border-color var(--dur-micro),transform var(--dur-micro) var(--ease-enter)}
+#s9 .tk:hover{border-color:var(--brand-accent);transform:translateY(-4px)}
+#s9 .tk .n{font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--brand-accent)}
+#s9 .tk h4{font-family:var(--font-display);font-weight:800;font-size:28px;line-height:1.1;letter-spacing:-.01em}
+#s9 .tk p{font-size:17px;line-height:1.45;font-weight:300;color:var(--brand-text-muted);margin-top:12px}
+#s9 .tk.hero{background:var(--orbyt-verde-claro);color:var(--orbyt-azul-profundo);border-color:var(--orbyt-verde-claro)}
+#s9 .tk.hero .n{color:var(--orbyt-azul-profundo)}
+#s9 .tk.hero .hrs{font-family:var(--font-display);font-weight:800;font-size:76px;line-height:.92;letter-spacing:-.03em}
+#s9 .tk.hero p{color:var(--orbyt-azul-profundo)}
+#pins{position:absolute;inset:0;pointer-events:none}
+#pins i{position:absolute;width:18px;height:18px;border-radius:50%;opacity:.95}
+
+/* 10 Sin presupuesto */
+#s10{padding:0}
+#s10 .l{position:absolute;left:0;top:0;bottom:0;width:960px;padding:var(--m)}
+#s10 .r{position:absolute;right:0;top:0;bottom:0;width:960px;padding:var(--m) var(--m) var(--m) 90px;background:var(--orbyt-platino);color:var(--orbyt-azul-profundo)}
+#s10 .r .kicker{color:rgb(0 26 37 / .7)}
+#s10 .r .kicker b{color:var(--orbyt-bruma-oceanica)}
+#s10 .h1{font-size:60px;margin-top:34px}
+#s10 .zero{font-family:var(--font-display);font-weight:800;font-size:132px;color:var(--brand-accent);line-height:.9;letter-spacing:-.03em;margin-top:44px}
+#s10 .zero small{display:block;font-family:var(--font-body);font-weight:300;font-size:22px;color:var(--brand-text-muted);letter-spacing:0;margin-top:14px}
+#s10 .fund{position:absolute;left:var(--m);right:60px;bottom:var(--m);display:grid;gap:0;border-top:1px solid var(--brand-border)}
+#s10 .fund div{display:grid;grid-template-columns:64px 1fr;padding:20px 0;border-bottom:1px solid var(--brand-border);align-items:baseline}
+#s10 .fund .n{font-family:var(--font-display);font-weight:800;color:var(--brand-accent);font-size:16px}
+#s10 .fund b{font-family:var(--font-display);font-weight:400;font-size:24px;display:block}
+#s10 .fund span{font-size:16px;color:var(--brand-text-muted);font-weight:300;display:block;margin-top:6px}
+#s10 .r h3{font-family:var(--font-display);font-weight:800;font-size:44px;line-height:1.05;margin-top:34px;letter-spacing:-.015em}
+#s10 .ask{list-style:none;margin-top:40px;border-top:1px solid rgb(0 26 37 / .16)}
+#s10 .ask li{display:grid;grid-template-columns:44px 1fr;align-items:center;padding:17px 0;border-bottom:1px solid rgb(0 26 37 / .16);font-family:var(--font-display);font-size:25px}
+#s10 .ask li small{display:block;font-family:var(--font-body);font-size:15px;color:rgb(0 26 37 / .7);margin-top:4px}
+#s10 .ask svg{width:26px;height:26px}
+#s10 .ask .ck{fill:none;stroke:var(--orbyt-azul-profundo);stroke-width:2.2;stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset 600ms var(--ease-enter)}
+.slide.active #s10-anchor{}
+#s10.active .ask li .ck{stroke-dashoffset:0;transition-delay:calc(700ms + var(--i)*110ms)}
+#s10 .ask .o{fill:none;stroke:var(--orbyt-bruma-oceanica);stroke-width:1.5}
+
+/* 11 Por qué nosotros (claro) */
+#s11 .grid{display:grid;grid-template-columns:720px 1fr;gap:110px;margin-top:120px}
+#s11 .h1{font-size:72px;margin-top:0}
+#s11 .lead{color:rgb(0 26 37 / .7);margin-top:30px;max-width:24ch}
+#s11 .creds{list-style:none;border-top:1px solid rgb(0 26 37 / .18)}
+#s11 .creds li{display:grid;grid-template-columns:110px 1fr;gap:20px;align-items:baseline;padding:24px 0;border-bottom:1px solid rgb(0 26 37 / .18)}
+#s11 .creds .k{font-family:var(--font-display);font-weight:800;font-size:44px;line-height:1;color:var(--orbyt-bruma-oceanica);letter-spacing:-.02em}
+#s11 .creds b{font-family:var(--font-display);font-weight:400;font-size:27px;line-height:1.2;display:block}
+#s11 .creds span{font-size:16px;color:rgb(0 26 37 / .7);display:block;margin-top:6px}
+
+/* 12 Cierre */
+#s12 .quote{margin-top:120px;font-size:96px}
+#s12 .quote span{display:block}
+#s12 .next{position:absolute;right:var(--m);bottom:var(--m);width:720px;border-top:1px solid var(--brand-border)}
+#s12 .next div{display:grid;grid-template-columns:56px 1fr auto;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--brand-border)}
+#s12 .next .n{font-family:var(--font-display);font-weight:800;color:var(--brand-accent);font-size:16px}
+#s12 .next b{font-family:var(--font-display);font-weight:400;font-size:24px}
+#s12 .next em{font-style:normal;font-size:15px;letter-spacing:.06em;color:var(--brand-accent-2)}
+#s12 .logo{position:absolute;left:var(--m);bottom:var(--m);width:300px} /* posición 4, mismo eje que el texto */
+#s12 .contact{position:absolute;right:var(--m);top:var(--m);text-align:right}
+
+@media (prefers-reduced-motion:reduce){
+  .a,.slide.active .a{transform:none!important;transition-duration:200ms!important}
+  .grain{animation:none}
+  #mapsvg .route,#mapsvg .ring{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGOS (SVG originales, incrustados) ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="orbyt-isologo" viewBox="-6 378 1012 246">
+      <path fill="currentColor" d="M371.25,511.54v-3.8c42.37-.88,65.46-17.24,65.46-58.44,0-37.4-17.53-60.78-86.2-60.78h-94.38c.88,31.56,1.75,80.06,1.75,111.62s-.88,80.07-1.75,111.33h40.03v-88.25h48.51c28.93,0,42.66,13.44,47.92,40.32,2.63,14.9,7.01,34.77,11.98,47.92h42.66c-4.09-11.69-12.27-40.62-15.78-54.06-7.89-30.1-23.38-43.83-60.2-45.88ZM344.36,497.22h-48.51v-15.49l.29-66.91h48.51c34.77,0,51.43,10.52,51.43,41.2s-16.66,41.2-51.72,41.2Z"/>
+      <path fill="currentColor" d="M579.01,498.68v-3.8c48.8-1.75,67.21-22.79,67.21-52.31,0-36.53-21.33-54.06-85.91-54.06h-95.26c.88,31.27,1.75,83.28,1.75,111.62s-.88,80.07-1.75,111.33h99.94c63.7,0,86.49-20.75,86.49-59.32,0-33.6-21.62-53.18-72.47-53.48ZM504.79,479.98v-65.16h49.09c34.77,0,51.72,10.52,51.72,35.36s-14.32,36.53-52.01,36.53h-48.8v-6.72ZM557.97,585.18h-53.18v-74.81h52.6c37.69,0,54.35,11.98,54.35,37.4s-16.07,37.4-53.77,37.4Z"/>
+      <path fill="currentColor" d="M797.3,388.52l-47.92,127.99h-4.68l-52.6-127.99h-42.08c20.75,47.63,42.66,99.35,61.95,147.56h12.57c10.52,0,16.95-2.92,21.62-12.27h5.26l-13.15,23.38-23.67,64.29h21.04c17.53,0,24.25-5.55,29.51-20.75,18.19-52.51,40.64-113.77,64.4-175.91h62.62c.88,26.88,1.46,58.15,1.46,85.32,0,37.11-.88,74.51-1.75,111.33h40.62c-.88-36.82-1.75-74.22-1.75-111.33,0-27.18.59-58.15,1.75-85.32h67.5v-26.3h-202.7Z"/>
+      <path fill="currentColor" d="M76.2,395.01c-62.37,27.12-92.5,96.11-67.29,154.1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,25.22,57.98,96.21,82.99,158.58,55.87,62.37-27.12,92.49-96.1,67.29-154.09,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0-25.21-57.99-96.22-83.01-158.59-55.89ZM83.22,411.17c29.09-12.65,62.23-5.84,87.37,14.75-22.01,1.16-47.41,7.21-72.99,18.33-25.57,11.12-47.33,25.57-63.18,40.88,2.09-32.43,19.71-61.3,48.8-73.95ZM160.47,588.83c-29.08,12.65-62.22,5.85-87.35-14.73,22.01-1.16,47.41-7.21,72.98-18.33,25.57-11.12,47.32-25.57,63.17-40.87-2.09,32.42-19.72,61.29-48.8,73.93ZM200.52,465.81c9.5,21.87-18,54.92-61.45,73.81-43.44,18.89-86.37,16.47-95.89-5.4,0,0,0,0,0,0-9.51-21.87,18-54.92,61.45-73.81,43.45-18.89,86.38-16.47,95.89,5.4,0,0,0,0,0,0Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="lightbg" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div id="viewport">
+<main id="stage">
+
+  <!-- 01 · PORTADA -->
+  <section class="slide" id="s1" data-title="Portada" data-sub="Diseñar con intención">
+    <h1 class="logo a" style="--i:0" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></h1>
+    <p class="lema a" style="--i:3">Diseñar con <b>intención</b></p>
+    <p class="bajada a" style="--i:6">Propuesta de Alianza Institucional <i></i> Universidad Siglo 21</p>
+  </section>
+
+  <!-- 02 · EL PROBLEMA -->
+  <section class="slide" id="s2" data-title="El problema" data-sub="Córdoba no tiene su festival">
+    <div class="cols">
+      <div class="left">
+        <div>
+          <p class="kicker a" style="--i:0"><b>02</b> El problema en Córdoba</p>
+          <h2 class="h1 a" style="--i:1">En Córdoba hay talento de sobra.</h2>
+          <p class="lead a" style="--i:2;margin-top:26px;max-width:32ch">Lo que falta es un lugar donde ese talento se encuentre.</p>
+        </div>
+        <div class="facts">
+          <div class="fact a" style="--i:4"><div class="big">2ª</div><p>ciudad del país en cantidad de universitarios, con una comunidad de diseño enorme.</p></div>
+          <div class="fact a" style="--i:5"><div class="big c">Ningún</div><p>evento masivo propio de la disciplina.</p></div>
+          <div class="fact a" style="--i:6"><div class="big c">BA · MDQ</div><p>Para escuchar a referentes, mostrar su trabajo o hacer contactos, hoy hay que viajar, con el costo que eso implica.</p></div>
+          <div class="fact a" style="--i:7"><div class="big">En riesgo</div><p>los eventos de diseño de la ciudad que dependían del Estado.</p></div>
+        </div>
+      </div>
+      <div class="a" style="--i:3;position:relative">
+        <svg id="mapsvg" viewBox="0 0 760 880" aria-hidden="true">
+          <!-- Córdoba -->
+          <g transform="translate(250 330)">
+            <circle class="ring" r="34" stroke-width="1.5"/>
+            <circle class="ring r2" r="34" stroke-width="1.5"/>
+            <circle r="12" fill="#A2C617"/>
+            <text class="lbl" x="30" y="-22" style="font-family:var(--font-display);font-weight:800;font-size:28px">Córdoba</text>
+            <text class="lbl-s" x="30" y="4">Talento sin punto de encuentro</text>
+          </g>
+          <!-- rutas -->
+          <path class="route" d="M262 340 C 420 360, 560 460, 640 560"/>
+          <path class="route" d="M258 346 C 360 520, 520 700, 600 790"/>
+          <g transform="translate(640 560)">
+            <circle r="7" fill="none" stroke="#4AB9AD" stroke-width="2"/>
+            <text class="lbl" x="-14" y="-22" text-anchor="end">Buenos Aires</text>
+          </g>
+          <g transform="translate(600 790)">
+            <circle r="7" fill="none" stroke="#4AB9AD" stroke-width="2"/>
+            <text class="lbl" x="-16" y="6" text-anchor="end">Mar del Plata</text>
+          </g>
+          <text class="lbl-s" x="470" y="455" transform="rotate(32 470 455)">Hoy hay que viajar</text>
+        </svg>
+      </div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 03 · MANIFIESTO -->
+  <section class="slide" id="s3" data-title="Manifiesto" data-sub="Que el crecimiento pase acá">
+    <p class="kicker a" style="--i:0"><b>03</b> Manifiesto</p>
+    <p class="pre a" style="--i:1">Diseñamos tanto que a veces nos olvidamos de para qué. Pero nadie diseña solo del todo.</p>
+    <h2 class="display big">
+      <span class="a" style="--i:3">No queremos tener</span>
+      <span class="a" style="--i:4">que irnos para crecer.</span>
+      <span class="a verde" style="--i:6">Queremos que el</span>
+      <span class="a verde" style="--i:7">crecimiento pase acá.</span>
+    </h2>
+    <p class="post a" style="--i:10">Un día para frenar la rueda y ponernos en órbita.</p>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 04 · CONCEPTO -->
+  <section class="slide" id="s4" data-title="Concepto" data-sub="Los 3 pilares">
+    <div class="top">
+      <div>
+        <p class="kicker a" style="--i:0"><b>04</b> Concepto central</p>
+        <h2 class="h1 a" style="--i:1">Diseñar con <span class="verde">intención</span></h2>
+        <p class="lead a" style="--i:2;max-width:34ch">Un día para volver a preguntarnos para qué diseñamos, y hacerlo juntos. Cuerpos en su propia trayectoria, dentro de un mismo sistema.</p>
+        <div class="stamp a" style="--i:3"><b>Festival, no congreso.</b> Cercano, participativo y con humor, sin perder profundidad.</div>
+      </div>
+      <canvas id="sys" class="a" style="--i:2" aria-hidden="true"></canvas>
+    </div>
+    <div class="pillars">
+      <div class="pillar a" data-ring="0" style="--i:5"><span class="n">01</span><h3>Con sentido</h3><p>El diseño como disciplina que transforma y comunica, no solo como fábrica de piezas para redes.</p></div>
+      <div class="pillar a" data-ring="1" style="--i:6"><span class="n">02</span><h3>En órbita</h3><p>Romper con la soledad del freelance. El intercambio entre colegas también es parte del oficio.</p></div>
+      <div class="pillar a" data-ring="2" style="--i:7"><span class="n">03</span><h3>Que el momento cuente</h3><p>Recuperar la sorpresa y el disfrute. Cada actividad deja algo hecho, dicho o compartido.</p></div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 05 · LA PROPUESTA -->
+  <section class="slide" id="s5" data-title="La propuesta" data-sub="Sede del primer festival">
+    <p class="kicker a" style="--i:0"><b>05</b> La propuesta para Siglo 21</p>
+    <h2 class="display a" style="--i:1">Ser la sede del <span class="verde">primer festival</span> de diseño gráfico de Córdoba.</h2>
+    <div class="row">
+      <div class="item a" style="--i:4"><span class="cap">Qué</span><p>Un festival dedicado exclusivamente al diseño gráfico.</p></div>
+      <div class="item a" style="--i:5"><span class="cap">Dónde</span><p>En el campus de la Universidad Siglo 21.</p></div>
+      <div class="item a" style="--i:6"><span class="cap">Quiénes</span><p>Organizado por egresados de la casa.</p></div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 06 · QUÉ GANA CADA PARTE -->
+  <section class="slide" id="s6" data-title="Qué gana cada parte" data-sub="5 perfiles, un mismo sistema">
+    <div class="grid">
+      <div>
+        <p class="kicker a" style="--i:0"><b>06</b> Qué gana cada parte</p>
+        <h2 class="h1 a" style="--i:1">Cada uno en su órbita. Todos en el mismo sistema.</h2>
+        <div class="tabs a" style="--i:2" role="tablist"></div>
+        <div id="gain" class="a" style="--i:3"></div>
+      </div>
+      <div class="a" style="--i:2">
+        <svg id="orbsvg" viewBox="0 0 900 880" aria-hidden="true"></svg>
+      </div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 07 · LA EXPERIENCIA -->
+  <section class="slide" id="s7" data-title="La experiencia" data-sub="Actividades por pilar">
+    <p class="kicker a" style="--i:0"><b>07</b> La experiencia del día</p>
+    <div class="head">
+      <h2 class="h1 a" style="--i:1">Cada actividad responde a una idea.</h2>
+    </div>
+    <div class="atabs a" style="--i:2" role="tablist">
+      <button class="atab on" data-g="0"><span class="n">01 · Con sentido</span><span class="t">Para pensar la disciplina</span><span class="p">5 formatos</span></button>
+      <button class="atab" data-g="1"><span class="n">02 · En órbita</span><span class="t">Para encontrarse con otros</span><span class="p">4 formatos</span></button>
+      <button class="atab" data-g="2"><span class="n">03 · Que el momento cuente</span><span class="t">Para hacer y disfrutar</span><span class="p">6 formatos</span></button>
+    </div>
+    <div id="acts" class="a" style="--i:3">
+      <div class="agroup on" data-g="0">
+        <article class="card" style="--i:0"><span class="tag">Auditorio · 2</span><h4>Conferencias magistrales</h4><p>Una a la mañana y otra antes del cierre, a cargo de referentes. Sin nada en paralelo: todo el festival se junta.</p></article>
+        <article class="card" style="--i:1"><span class="tag">45 minutos</span><h4>Charlas temáticas</h4><p>Branding, identidad, IA, licencias y autoría. Procesos reales: qué salió mal y qué se aprendió.</p></article>
+        <article class="card" style="--i:2"><span class="tag">Con votación</span><h4>Debate</h4><p>Dos referentes con posturas opuestas discuten una pregunta que divide al rubro. El público pregunta y vota.</p></article>
+        <article class="card" style="--i:3"><span class="tag">En vivo</span><h4>ORBYT Podcast</h4><p>Una entrevista descontracturada en el escenario, con formato de podcast.</p></article>
+        <article class="card" style="--i:4"><span class="tag">Postulación previa</span><h4>Revisión de portfolios</h4><p>Dueños de estudios y agencias de Córdoba revisan trabajos en vivo y dan devoluciones honestas.</p></article>
+      </div>
+      <div class="agroup" data-g="1">
+        <article class="card" style="--i:0"><span class="tag">Al llegar</span><h4>Acreditación</h4><p>Gafete, tríptico con grilla y mapa del campus, y un pin de color según el área de interés: la excusa para hablar.</p></article>
+        <article class="card" style="--i:1"><span class="tag">~20 personas</span><h4>Rondas íntimas</h4><p>Con un referente, de igual a igual, como tomando un café. No hay presentación: hay preguntas.</p></article>
+        <article class="card" style="--i:2"><span class="tag">Equipos de ~5</span><h4>Co-diseño en vivo</h4><p>Estudiantes y profesionales resuelven un problema real del rubro, como armar un tarifario. Se presenta en el cierre.</p></article>
+        <article class="card" style="--i:3"><span class="tag">4 momentos</span><h4>Networking</h4><p>Media mañana, almuerzo, merienda y despedida, con música en vivo o DJ. El corazón social del festival.</p></article>
+      </div>
+      <div class="agroup" data-g="2">
+        <article class="card" style="--i:0"><span class="tag">Hora y media</span><h4>Workshops</h4><p>Tipografía, motion, packaging o ilustración. Con cupo, y cada asistente se va con algo hecho.</p></article>
+        <article class="card" style="--i:1"><span class="tag">Muestra</span><h4>Mural “¿Para qué diseñamos?”</h4><p>Pósters de los participantes que crecen durante el día y una pared en blanco para responder.</p></article>
+        <article class="card" style="--i:2"><span class="tag">Patio</span><h4>Impresión en vivo</h4><p>Una estación de serigrafía para imprimir una pieza de ORBYT y llevársela.</p></article>
+        <article class="card" style="--i:3"><span class="tag">Food trucks</span><h4>Vasos intervenidos</h4><p>Vasos blancos y fibrones para diseñar mientras se come. Los mejores van a los Awards.</p></article>
+        <article class="card" style="--i:4"><span class="tag">Por la tarde</span><h4>Juegos al aire libre</h4><p>Juegos de ingenio y diseño en el patio, para romper el hielo entre grupos.</p></article>
+        <article class="card" style="--i:5"><span class="tag">2 entregas</span><h4>ORBYT Awards</h4><p>Premios simbólicos y con humor. Premian la participación, no la competencia.</p></article>
+      </div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 08 · UN DÍA EN ÓRBITA -->
+  <section class="slide" id="s8" data-title="Un día en órbita" data-sub="Recorrido de 8:30 a 18:30">
+    <p class="kicker a" style="--i:0"><b>08</b> Un día en órbita</p>
+    <h2 class="h1 a" style="--i:1">Diez horas que <span class="verde">cuentan</span>.</h2>
+    <p class="lead a" style="--i:2">Charlas, talleres y encuentros que se alternan para que nadie se quede quieto ni solo.</p>
+    <svg id="daysvg" viewBox="0 0 1920 700" aria-hidden="true"></svg>
+    <p class="cap note a" style="--i:4">Recorrido ilustrativo · horarios exactos en el cronograma <span class="cian">[A DEFINIR]</span></p>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 09 · QUÉ SE LLEVA CADA ASISTENTE -->
+  <section class="slide" id="s9" data-title="Qué se lleva cada asistente" data-sub="5 cosas concretas">
+    <p class="kicker a" style="--i:0"><b>09</b> Qué se lleva cada asistente</p>
+    <h2 class="h1 a" style="--i:1">Nadie se va con las manos vacías.</h2>
+    <div class="take">
+      <div class="tk hero a" style="--i:3"><span class="n">01</span><div><div class="hrs">8:30<br>18:30</div><p style="margin-top:18px">Un día completo de charlas, talleres y actividades.</p></div></div>
+      <div class="tk a" style="--i:4"><span class="n">02</span><div><h4>Certificado</h4><p>De participación, avalado por la Universidad Siglo 21.</p></div></div>
+      <div class="tk a" style="--i:5"><span class="n">03</span><div><h4>Banco de recursos</h4><p>Plantillas, texturas y plugins. La contraseña está en su gafete.</p></div></div>
+      <div class="tk a" style="--i:6"><span class="n">04</span><div><h4>Algo hecho con sus manos</h4><p>Un vaso intervenido, una serigrafía, su póster en la muestra.</p></div></div>
+      <div class="tk a" style="--i:7"><div id="pins"></div><span class="n">05</span><div><h4>Contactos nuevos</h4><p>Facilitados por pines de colores según el área de interés.</p></div></div>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 10 · CÓMO FUNCIONA SIN PRESUPUESTO -->
+  <section class="slide" id="s10" data-title="Sin presupuesto" data-sub="Cómo se financia y qué pedimos">
+    <div class="l">
+      <p class="kicker a" style="--i:0"><b>10</b> Cómo funciona sin presupuesto</p>
+      <h2 class="h1 a" style="--i:1">No le pedimos fondos a la universidad.</h2>
+      <div class="zero a" style="--i:2">$0<small>de presupuesto de la Siglo 21.</small></div>
+      <div class="fund">
+        <div class="a" style="--i:4"><span class="n">01</span><p><b>Recaudación propia</b></p></div>
+        <div class="a" style="--i:5"><span class="n">02</span><p><b>Canjes con sponsors</b><span>Speakers, impresión, merch y música, por acuerdos de visibilidad.</span></p></div>
+        <div class="a" style="--i:6"><span class="n">03</span><p><b>Food trucks</b><span>Cubren almuerzo y merienda.</span></p></div>
+      </div>
+    </div>
+    <div class="r">
+      <p class="kicker a" style="--i:2"><b>El pedido</b> Lo que necesitamos de la Siglo 21</p>
+      <h3 class="a" style="--i:3">Espacios, un aval y una fecha.</h3>
+      <ul class="ask">
+        <li class="a" style="--i:5"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:0" d="M7 13.5l4 4 8-9"/></svg><span>Auditorio y anfiteatro</span></li>
+        <li class="a" style="--i:6"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:1" d="M7 13.5l4 4 8-9"/></svg><span>Patio central</span></li>
+        <li class="a" style="--i:7"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:2" d="M7 13.5l4 4 8-9"/></svg><span>Dos o tres aulas<small>Para talleres y rondas</small></span></li>
+        <li class="a" style="--i:8"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:3" d="M7 13.5l4 4 8-9"/></svg><span>Aval institucional para el certificado</span></li>
+        <li class="a" style="--i:9"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:4" d="M7 13.5l4 4 8-9"/></svg><span>Permiso de ingreso de food trucks</span></li>
+        <li class="a" style="--i:10"><svg viewBox="0 0 26 26"><circle class="o" cx="13" cy="13" r="12"/><path class="ck" style="--i:5" d="M7 13.5l4 4 8-9"/></svg><span>Una fecha<small>[A DEFINIR]</small></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 11 · POR QUÉ NOSOTROS (claro) -->
+  <section class="slide light" id="s11" data-title="Por qué nosotros" data-sub="Egresados de la casa" data-light="1">
+    <p class="kicker a" style="--i:0"><b>11</b> Por qué nosotros</p>
+    <div class="grid">
+      <div>
+        <h2 class="h1 a" style="--i:1">Somos de la casa. Y ya lo hicimos.</h2>
+        <p class="lead a" style="--i:2">Un equipo organizado por áreas, como contenidos y comunicación, para llevarlo a la realidad.</p>
+      </div>
+      <ul class="creds">
+        <li class="a" style="--i:3"><span class="k">S21</span><div><b>Egresados de la Siglo 21</b><span>Con un estudio de branding propio.</span></div></li>
+        <li class="a" style="--i:4"><span class="k">FIE</span><div><b>Foro Internacional de Emprendedores</b><span>Lideramos su comunicación y producción para Junior Achievement.</span></div></li>
+        <li class="a" style="--i:5"><span class="k">×2</span><div><b>Dos ediciones de CTRL G</b><span>Nuestro evento de networking para creativos, muy bien recibido por la comunidad.</span></div></li>
+        <li class="a" style="--i:6"><span class="k">TFG</span><div><b>Nació en esta universidad</b><span>ORBYT fue un Trabajo Final de Grado de la Licenciatura en Diseño Gráfico.</span></div></li>
+      </ul>
+    </div>
+    <a class="logo logo-corner" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></a>
+  </section>
+
+  <!-- 12 · CIERRE -->
+  <section class="slide" id="s12" data-title="Cierre" data-sub="Próximos pasos">
+    <p class="kicker a" style="--i:0"><b>12</b> Próximos pasos</p>
+    <h2 class="display quote">
+      <span class="a" style="--i:1">Venimos a diseñar</span>
+      <span class="a" style="--i:2">con intención.</span>
+      <span class="a verde" style="--i:4">Y a que el</span>
+      <span class="a verde" style="--i:5">momento cuente.</span>
+    </h2>
+    <div class="next">
+      <div class="a" style="--i:7"><span class="n">01</span><b>Definir la fecha</b><em>[A DEFINIR]</em></div>
+      <div class="a" style="--i:8"><span class="n">02</span><b>Reunión de coordinación</b><em>[A DEFINIR]</em></div>
+      <div class="a" style="--i:9"><span class="n">03</span><b>Contacto</b><em>[COMPLETAR CONTACTO]</em></div>
+    </div>
+    <div class="logo a" style="--i:10" aria-label="ORBYT"><svg><use href="#orbyt-isologo"/></svg></div>
+  </section>
+
+</main>
+</div>
+
+<!-- UI -->
+<nav id="ui" aria-label="Navegación">
+  <button class="btn" id="prev" aria-label="Anterior"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M9 2L4 7l5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+  <span id="count"><b>01</b> / 12</span>
+  <button class="btn" id="next" aria-label="Siguiente"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 2l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+  <button class="g" id="gbtn" aria-label="Vista general">G · Vista general</button>
+</nav>
+<div id="progress"></div>
+
+<div id="overview" aria-hidden="true">
+  <header><div class="logo" style="width:150px"><svg><use href="#orbyt-isologo"/></svg></div><span>Elegí una slide · G o Esc para cerrar</span></header>
+  <div id="ovgrid"></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const C = {azul:'#001A25', platino:'#E3E3E3', verde:'#A2C617', cian:'#4AB9AD', bruma:'#065F78'};
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TILT = -23.5 * Math.PI/180;
+const easeOrbit = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+/* ============ escenario escalado ============ */
+const stage = document.getElementById('stage');
+function fit(){
+  const s = Math.min(innerWidth/1920, innerHeight/1080);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+
+/* ============ navegación ============ */
+const slides = [...document.querySelectorAll('section.slide')];
+const N = slides.length;
+let cur = -1;
+const count = document.getElementById('count');
+const progress = document.getElementById('progress');
+
+function go(i){
+  i = Math.max(0, Math.min(N-1, i));
+  if(i===cur) return;
+  const prev = cur;
+  if(prev>=0) slides[prev].classList.remove('active');
+  cur = i;
+  slides[i].classList.add('active');
+  document.body.classList.toggle('is-light', !!slides[i].dataset.light);
+  count.innerHTML = `<b>${String(i+1).padStart(2,'0')}</b> / ${String(N).padStart(2,'0')}`;
+  progress.style.width = ((i+1)/N*100)+'%';
+  history.replaceState(null,'','#'+(i+1));
+  halo.to(i);
+  hooks[slides[i].id]?.enter?.();
+  if(prev>=0) hooks[slides[prev].id]?.leave?.();
+  document.querySelectorAll('.ov').forEach((o,k)=>o.classList.toggle('cur',k===i));
+}
+document.getElementById('prev').onclick = () => go(cur-1);
+document.getElementById('next').onclick = () => go(cur+1);
+
+addEventListener('keydown', e => {
+  if(e.key==='g' || e.key==='G'){ toggleOv(); return; }
+  if(ovOpen){ if(e.key==='Escape') toggleOv(false); return; }
+  if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); go(cur+1); }
+  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); go(cur-1); }
+  else if(e.key==='Home') go(0);
+  else if(e.key==='End') go(N-1);
+});
+let tx=null;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{ if(tx===null) return; const d=e.changedTouches[0].clientX-tx; if(Math.abs(d)>50) go(cur+(d<0?1:-1)); tx=null; });
+
+/* ============ vista general (G) ============ */
+const ov = document.getElementById('overview'), ovgrid = document.getElementById('ovgrid');
+let ovOpen = false;
+slides.forEach((s,k)=>{
+  const b = document.createElement('button');
+  b.className='ov'; b.style.setProperty('--i',k);
+  b.innerHTML = `<span class="n">${String(k+1).padStart(2,'0')}</span><span><span class="t">${s.dataset.title}</span><span class="s" style="display:block">${s.dataset.sub||''}</span></span>`;
+  b.onclick = () => { toggleOv(false); go(k); };
+  ovgrid.appendChild(b);
+});
+function toggleOv(force){
+  ovOpen = force===undefined ? !ovOpen : force;
+  ov.classList.toggle('open', ovOpen);
+  ov.setAttribute('aria-hidden', !ovOpen);
+}
+document.getElementById('gbtn').onclick = () => toggleOv();
+
+/* ============ PIEZA 1 · halo orbital global (canvas) ============ */
+const bg = document.getElementById('bg'), bx = bg.getContext('2d');
+let W=0,H=0,DPR=1, haloImg=null, HR=0;
+function buildHalo(){
+  // anillo elíptico: borde exterior nítido en Verde, interior que se funde a Azul Profundo
+  HR = Math.max(W,H)*0.62;
+  const ratio = 0.56;
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(HR*2); c.height = Math.ceil(HR*2*ratio);
+  const x = c.getContext('2d');
+  x.translate(c.width/2, c.height/2); x.scale(1, ratio);
+  const g = x.createRadialGradient(0,0,0,0,0,HR);
+  g.addColorStop(0.00,'rgba(0,26,37,0)');
+  g.addColorStop(0.66,'rgba(0,26,37,0)');
+  g.addColorStop(0.79,'rgba(6,95,120,.55)');
+  g.addColorStop(0.88,'rgba(74,185,173,.95)');
+  g.addColorStop(0.955,'rgba(162,198,23,1)');
+  g.addColorStop(0.975,'rgba(162,198,23,.85)');
+  g.addColorStop(0.99,'rgba(162,198,23,0)');
+  x.fillStyle = g; x.beginPath(); x.arc(0,0,HR,0,Math.PI*2); x.fill();
+  haloImg = c;
+}
+function resizeBg(){
+  DPR = Math.min(devicePixelRatio||1, 2);
+  W = innerWidth; H = innerHeight;
+  bg.width = W*DPR; bg.height = H*DPR;
+  buildHalo();
+}
+addEventListener('resize', resizeBg); resizeBg();
+
+// estados por slide: x,y (fracción del viewport desde el centro), escala, rotación extra (°), opacidad
+const HS = [
+  {x:0,    y:0.02, s:1.00, r:0,   o:1},    // 01 portada
+  {x:0.62, y:0.55, s:0.80, r:8,   o:.7},   // 02
+  {x:0.20, y:1.15, s:1.10, r:-6,  o:.6},   // 03
+  {x:0.25, y:-0.08,s:0.48, r:4,   o:.4},   // 04
+  {x:0.78, y:0.15, s:0.85, r:-8,  o:.9},   // 05
+  {x:0.42, y:0.05, s:0.86, r:6,   o:.4},   // 06
+  {x:-0.45,y:0.80, s:1.10, r:-4,  o:.35},  // 07
+  {x:0.00, y:1.05, s:1.15, r:2,   o:.45},  // 08
+  {x:-0.30,y:-0.62,s:1.00, r:8,   o:.45},  // 09
+  {x:-0.62,y:1.22, s:0.90, r:-6,  o:.5},   // 10
+  {x:0.40, y:0.40, s:1.00, r:0,   o:0},    // 11 (claro)
+  {x:0.78, y:-0.55,s:0.80, r:-4,  o:.95}   // 12
+];
+const halo = {
+  a:{...HS[0]}, from:{...HS[0]}, to_:{...HS[0]}, t0:0, dur:1400,
+  to(i){ this.from = {...this.a}; this.to_ = {...HS[i]}; this.t0 = performance.now(); }
+};
+// partículas que orbitan sobre la elipse
+const parts = Array.from({length:46},(_,k)=>({
+  a: Math.random()*Math.PI*2,
+  sp: (0.04 + Math.random()*0.07) * (Math.random()<.5?1:1),
+  rr: 0.80 + Math.random()*0.17,
+  sz: Math.random()<.15 ? 2.6 : 1.2 + Math.random()*1.2,
+  col: Math.random()<.25 ? C.verde : (Math.random()<.5 ? C.cian : C.platino),
+  al: .25 + Math.random()*.6
+}));
+let last = performance.now(), amb = 0;
+function drawBg(now){
+  const dt = Math.min(64, now-last)/1000; last = now;
+  if(!RM) amb += dt * (Math.PI*2/ 24) * 0.25; // ambiente: muy lento
+  // interpolación de estado
+  const p = Math.min(1,(now-halo.t0)/halo.dur), e = RM ? 1 : easeOrbit(p);
+  for(const k of ['x','y','s','r','o']) halo.a[k] = halo.from[k] + (halo.to_[k]-halo.from[k])*e;
+  const a = halo.a;
+  bx.setTransform(DPR,0,0,DPR,0,0);
+  bx.fillStyle = C.azul; bx.fillRect(0,0,W,H);
+  if(a.o > 0.01){
+    bx.save();
+    bx.globalAlpha = a.o;
+    bx.translate(W/2 + a.x*W, H/2 + a.y*H);
+    bx.rotate(TILT + (a.r*Math.PI/180) + Math.sin(amb)*0.035);
+    const sc = a.s * (1 + Math.sin(amb*0.7)*0.012);
+    bx.scale(sc, sc);
+    bx.drawImage(haloImg, -haloImg.width/2, -haloImg.height/2);
+    // partículas en la misma órbita
+    const rx = HR, ry = HR*0.56;
+    for(const q of parts){
+      if(!RM) q.a += q.sp*dt;
+      const px = Math.cos(q.a)*rx*q.rr, py = Math.sin(q.a)*ry*q.rr;
+      bx.globalAlpha = a.o*q.al;
+      bx.fillStyle = q.col;
+      bx.beginPath(); bx.arc(px,py,q.sz/sc,0,Math.PI*2); bx.fill();
+    }
+    bx.restore();
+  }
+  requestAnimationFrame(drawBg);
+}
+requestAnimationFrame(drawBg);
+
+/* ============ hooks por slide ============ */
+const hooks = {};
+
+/* ---- PIEZA 2 · sistema de cuerpos en órbita (slide 04) ---- */
+(() => {
+  const cv = document.getElementById('sys'), x = cv.getContext('2d');
+  const CW=760, CH=610, d=2;
+  cv.width = CW*d; cv.height = CH*d; cv.style.width=CW+'px'; cv.style.height=CH+'px';
+  const cx = CW/2, cy = CH/2+10;
+  const rings = [
+    {rx:150, ry:72,  n:5,  sp:.32, tilt:-23.5},
+    {rx:255, ry:124, n:9,  sp:-.20,tilt:-23.5},
+    {rx:355, ry:176, n:12, sp:.13, tilt:-23.5}
+  ];
+  const bodies = [];
+  rings.forEach((r,ri)=>{
+    for(let k=0;k<r.n;k++){
+      bodies.push({ri, a:k/r.n*Math.PI*2 + Math.random()*.4, sp:r.sp*(0.85+Math.random()*.3), wob:Math.random()*Math.PI*2,
+        sz: (k===0? 9 : 3 + Math.random()*4), x:0, y:0});
+    }
+  });
+  let hi = -1, run = false, lt = 0;
+  document.querySelectorAll('#s4 .pillar').forEach(p=>{
+    p.addEventListener('mouseenter',()=>{hi=+p.dataset.ring; p.classList.add('on')});
+    p.addEventListener('mouseleave',()=>{hi=-1; p.classList.remove('on')});
+  });
+  const ct = Math.cos(TILT), st = Math.sin(TILT);
+  function frame(now){
+    if(!run) return;
+    const dt = Math.min(64, now-lt)/1000; lt = now;
+    x.setTransform(d,0,0,d,0,0); x.clearRect(0,0,CW,CH);
+    // órbitas
+    rings.forEach((r,ri)=>{
+      x.save(); x.translate(cx,cy); x.rotate(TILT);
+      x.strokeStyle = ri===hi ? C.verde : 'rgba(227,227,227,.16)';
+      x.lineWidth = ri===hi ? 1.6 : 1;
+      x.beginPath(); x.ellipse(0,0,r.rx,r.ry,0,0,Math.PI*2); x.stroke();
+      x.restore();
+    });
+    // posiciones
+    for(const b of bodies){
+      const r = rings[b.ri];
+      if(!RM) b.a += b.sp*dt;
+      b.wob += dt;
+      const ex = Math.cos(b.a)*r.rx, ey = Math.sin(b.a)*r.ry*(1+Math.sin(b.wob)*.03);
+      b.x = cx + ex*ct - ey*st; b.y = cy + ex*st + ey*ct;
+    }
+    // interacciones: líneas entre cuerpos cercanos de órbitas distintas
+    for(let i=0;i<bodies.length;i++) for(let j=i+1;j<bodies.length;j++){
+      const A=bodies[i],B=bodies[j]; if(A.ri===B.ri) continue;
+      const dx=A.x-B.x, dy=A.y-B.y, dd=Math.hypot(dx,dy);
+      if(dd<120){
+        const al = (1-dd/120);
+        x.strokeStyle = `rgba(74,185,173,${al*.75})`; x.lineWidth = 1;
+        x.beginPath(); x.moveTo(A.x,A.y); x.lineTo(B.x,B.y); x.stroke();
+      }
+    }
+    // núcleo
+    x.fillStyle = C.platino; x.beginPath(); x.arc(cx,cy,4,0,Math.PI*2); x.fill();
+    // cuerpos
+    for(const b of bodies){
+      const on = b.ri===hi;
+      x.fillStyle = on ? C.verde : (b.sz>8 ? C.verde : (b.ri===1 ? C.cian : C.platino));
+      x.globalAlpha = hi<0 ? (b.sz>8?1:.85) : (on?1:.35);
+      x.beginPath(); x.arc(b.x,b.y,b.sz,0,Math.PI*2); x.fill();
+      x.globalAlpha = 1;
+    }
+    requestAnimationFrame(frame);
+  }
+  hooks.s4 = { enter(){ run=true; lt=performance.now(); requestAnimationFrame(frame);}, leave(){ run=false; } };
+})();
+
+/* ---- PIEZA 3 · perfiles en órbita alrededor de la Siglo 21 (slide 06) ---- */
+(() => {
+  const data = [
+    {who:'Universidad Siglo 21', short:'Siglo 21',
+      get:'Posicionarse como el lugar donde pasa el diseño en Córdoba, visibilidad frente a futuros estudiantes y vínculo con estudios y agencias de la ciudad.',
+      how:'Evento en el campus, marca de la universidad en toda la comunicación y certificado avalado por la institución.'},
+    {who:'Estudiantes de la Siglo 21', short:'Estudiantes',
+      get:'Contacto directo con referentes y con quienes contratan, devoluciones sobre su portfolio y experiencia práctica en talleres.',
+      how:'Revisión de portfolios, rondas íntimas con cupo y workshops con inscripción.'},
+    {who:'Diseñadores profesionales', short:'Profesionales',
+      get:'Actualización, comunidad y un espacio para salir del aislamiento del trabajo freelance.',
+      how:'Charlas de nivel, debates, dinámicas grupales y cuatro momentos de networking.'},
+    {who:'Speakers y estudios invitados', short:'Speakers y estudios',
+      get:'Visibilidad frente a la comunidad y acceso a talento joven.',
+      how:'Lugar destacado en la grilla y en la comunicación del evento.'},
+    {who:'Sponsors', short:'Sponsors',
+      get:'Llegada directa a un público creativo y joven, difícil de alcanzar por otros medios.',
+      how:'Presencia de marca en piezas, espacios y entregables, a cambio de canjes o aportes.'}
+  ];
+  const tabs = document.querySelector('#s6 .tabs'), gain = document.getElementById('gain');
+  data.forEach((d,k)=>{
+    const t = document.createElement('button'); t.className='tab'; t.textContent=d.short; t.dataset.k=k; t.setAttribute('role','tab');
+    t.onclick = () => sel(k); tabs.appendChild(t);
+    const p = document.createElement('div'); p.className='gpanel'; p.dataset.k=k;
+    p.innerHTML = `<div class="who">${d.who}</div><dl><dt>Qué se lleva</dt><dd>${d.get}</dd><dt>Cómo lo garantizamos</dt><dd>${d.how}</dd></dl>`;
+    gain.appendChild(p);
+  });
+  const svg = document.getElementById('orbsvg'), NS='http://www.w3.org/2000/svg';
+  const CX=450, CY=440, RX=380, RY=190;
+  const ct=Math.cos(TILT), st=Math.sin(TILT);
+  // órbita
+  const g0 = document.createElementNS(NS,'g'); g0.setAttribute('transform',`translate(${CX} ${CY}) rotate(-23.5)`);
+  g0.innerHTML = `<ellipse rx="${RX}" ry="${RY}" fill="none" stroke="rgba(227,227,227,.18)" stroke-width="1.2"/>
+                  <ellipse rx="${RX*.62}" ry="${RY*.62}" fill="none" stroke="rgba(227,227,227,.08)" stroke-width="1"/>`;
+  svg.appendChild(g0);
+  const link = document.createElementNS(NS,'line'); link.setAttribute('stroke',C.verde); link.setAttribute('stroke-width','1.5'); link.setAttribute('stroke-dasharray','3 7');
+  svg.appendChild(link);
+  // núcleo
+  const core = document.createElementNS(NS,'g'); core.setAttribute('class','core'); core.setAttribute('transform',`translate(${CX} ${CY})`);
+  core.innerHTML = `<circle r="78" fill="${C.platino}"/><text text-anchor="middle" y="-4" font-size="26">Siglo</text><text text-anchor="middle" y="26" font-size="26">21</text>`;
+  svg.appendChild(core);
+  const nodes = data.map((d,k)=>{
+    const g = document.createElementNS(NS,'g'); g.setAttribute('class','node'); g.dataset.k=k;
+    g.innerHTML = `<circle class="b" r="14"/><text x="26" y="7">${d.short}</text>`;
+    g.onclick = () => sel(k);
+    svg.appendChild(g); return g;
+  });
+  let off = 0, target = null, run=false, lt=0, k0=0;
+  const FRONT = Math.PI*0.5; // punto de la elipse más cercano al espectador (abajo)
+  function sel(k){
+    k0 = k;
+    tabs.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on', +t.dataset.k===k));
+    gain.querySelectorAll('.gpanel').forEach(p=>p.classList.toggle('on', +p.dataset.k===k));
+    nodes.forEach((n,i)=>n.classList.toggle('on', i===k));
+    // girar el sistema para traer el perfil elegido al frente
+    let want = FRONT - k*(Math.PI*2/data.length);
+    let dlt = ((want-off)%(Math.PI*2)+Math.PI*3)%(Math.PI*2)-Math.PI;
+    target = off + dlt;
+  }
+  function place(){
+    nodes.forEach((n,i)=>{
+      const a = off + i*(Math.PI*2/data.length);
+      const ex=Math.cos(a)*RX, ey=Math.sin(a)*RY;
+      const px = CX + ex*ct - ey*st, py = CY + ex*st + ey*ct;
+      const depth = (Math.sin(a)+1)/2; // 0 atrás · 1 adelante
+      n.setAttribute('transform',`translate(${px.toFixed(1)} ${py.toFixed(1)}) scale(${(0.8+depth*0.4).toFixed(3)})`);
+      n.style.opacity = (0.45+depth*0.55).toFixed(2);
+      const tx = n.querySelector('text'); const right = px > CX+140;
+      tx.setAttribute('x', right ? -26 : 26); tx.setAttribute('text-anchor', right ? 'end' : 'start');
+      if(i===k0){ link.setAttribute('x1',CX); link.setAttribute('y1',CY); link.setAttribute('x2',px); link.setAttribute('y2',py); }
+    });
+  }
+  function frame(now){
+    if(!run) return;
+    const dt=Math.min(64,now-lt)/1000; lt=now;
+    if(target!==null){ off += (target-off)*Math.min(1,dt*3.2); if(Math.abs(target-off)<.002){off=target; target=null;} }
+    else if(!RM) off += dt*0.06;
+    place(); requestAnimationFrame(frame);
+  }
+  sel(0); off = target; target=null; place();
+  hooks.s6 = { enter(){ run=true; lt=performance.now(); requestAnimationFrame(frame);}, leave(){ run=false; } };
+})();
+
+/* ---- slide 07 · pestañas de actividades ---- */
+document.querySelectorAll('#s7 .atab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#s7 .atab').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('#s7 .agroup').forEach(gp=>gp.classList.toggle('on',gp.dataset.g===b.dataset.g));
+});
+
+/* ---- PIEZA 4 · el día como trayectoria (slide 08) ---- */
+(() => {
+  const svg = document.getElementById('daysvg'), NS='http://www.w3.org/2000/svg';
+  // arco: media elipse inclinada que atraviesa la slide
+  const pts = [
+    {t:'Acreditación', s:'Gafete · pin de color', k:1},
+    {t:'Conferencia magistral', s:'Todo el festival junto'},
+    {t:'Networking', s:'Media mañana'},
+    {t:'Charlas · rondas · workshops', s:'En paralelo'},
+    {t:'Almuerzo', s:'Food trucks · vasos'},
+    {t:'ORBYT Awards', s:'Primera entrega', k:1},
+    {t:'Juegos y co-diseño', s:'Por la tarde'},
+    {t:'Merienda', s:'Networking'},
+    {t:'Conferencia magistral', s:'Antes del cierre'},
+    {t:'Cierre y despedida', s:'Awards · co-diseño · DJ', k:1}
+  ];
+  const x0=190, x1=1730, yb=470, amp=200;
+  const P = u => { const x = x0+(x1-x0)*u; const y = yb - Math.sin(u*Math.PI)*amp; return [x,y]; };
+  let dpath = ''; for(let i=0;i<=120;i++){ const [x,y]=P(i/120); dpath += (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1); }
+  svg.innerHTML = `<path class="arc" d="${dpath}"/><path class="arc-on" id="arcon" d="${dpath}"/>
+    <text class="hr" x="${x0-70}" y="${P(0)[1]+110}">8:30</text>
+    <text class="hr" x="${x1-120}" y="${P(1)[1]+110}">18:30</text>`;
+  const arcon = svg.querySelector('#arcon'); const L = arcon.getTotalLength ? 2400 : 2400;
+  arcon.style.strokeDasharray = L; arcon.style.strokeDashoffset = L;
+  const els = pts.map((p,i)=>{
+    const u = (i+0.5)/pts.length; const [x,y]=P(u);
+    const up = i%2===0;
+    const g = document.createElementNS(NS,'g'); g.setAttribute('class','pt'+(p.k?' k':'')); g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    const ly = up ? -40 : 58;
+    g.innerHTML = `<line x1="0" y1="${up?-12:12}" x2="0" y2="${up?-26:26}" stroke="rgba(227,227,227,.3)"/>
+      <circle r="${p.k?10:7}"/>
+      <text text-anchor="middle" y="${ly}">${p.t}</text>
+      <text class="s" text-anchor="middle" y="${ly+(up?-26:24)}">${p.s}</text>`;
+    svg.appendChild(g); return g;
+  });
+  let timers=[];
+  hooks.s8 = {
+    enter(){
+      try{ const len = arcon.getTotalLength(); arcon.style.strokeDasharray=len; arcon.style.strokeDashoffset=len; }catch(e){}
+      arcon.style.transition='none'; arcon.getBoundingClientRect();
+      arcon.style.transition = `stroke-dashoffset ${RM?0:2600}ms cubic-bezier(0.65,0,0.35,1) 500ms`;
+      arcon.style.strokeDashoffset = 0;
+      els.forEach((g,i)=>{ g.classList.remove('show'); timers.push(setTimeout(()=>g.classList.add('show'), RM?0:700 + i*230)); });
+    },
+    leave(){ timers.forEach(clearTimeout); timers=[]; }
+  };
+})();
+
+/* ---- slide 09 · pines de colores ---- */
+(() => {
+  const box = document.getElementById('pins');
+  const cols = [C.verde,C.cian,C.platino,C.bruma,C.verde,C.cian];
+  const pins = cols.map((c,i)=>{ const p=document.createElement('i'); p.style.background=c; if(c===C.bruma) p.style.boxShadow='inset 0 0 0 2px '+C.cian; box.appendChild(p); return {el:p, a:i/cols.length*Math.PI*2, sp:.25+i*.04}; });
+  let run=false, lt=0;
+  function frame(now){
+    if(!run) return; const dt=Math.min(64,now-lt)/1000; lt=now;
+    const w=box.clientWidth, h=box.clientHeight;
+    pins.forEach((p,i)=>{ if(!RM) p.a+=p.sp*dt;
+      const ex=Math.cos(p.a)*w*.34, ey=Math.sin(p.a)*h*.12;
+      const x=w*.5+ex*Math.cos(TILT)-ey*Math.sin(TILT), y=h*.36+ex*Math.sin(TILT)+ey*Math.cos(TILT);
+      p.el.style.transform=`translate(${x-9}px,${y-9}px)`; });
+    requestAnimationFrame(frame);
+  }
+  hooks.s9 = { enter(){run=true; lt=performance.now(); requestAnimationFrame(frame);}, leave(){run=false;} };
+})();
+
+/* ============ inicio ============ */
+const start = Math.max(0, Math.min(N-1, (parseInt(location.hash.slice(1))||1)-1));
+halo.a = {...HS[start]}; halo.from={...HS[start]}; halo.to_={...HS[start]};
+requestAnimationFrame(()=>go(start));
+})();
+</script>
+</body>
+</html>
